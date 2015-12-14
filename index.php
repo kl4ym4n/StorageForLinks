@@ -1,20 +1,16 @@
 <?php
 
-class User
+$user = 'root';
+$pass = 'azarta';
+//echo "Ololo!";
+try
 {
-    private $login, $email, $password, $name, $surname;
-    public function setLogin($user_login)
-    {
-        $this->login = $user_login;
-    }
-    public function getLogin()
-    {
-        echo $this->login;
-        return $this->login;
-
-    }
+    $connection = new PDO('mysql:host=localhost; dbname=mydb', $user, $pass);
+}
+catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
 }
 
-$usr = new User();
-$usr->setLogin("Anton");
-$usr->getLogin();
+
+
