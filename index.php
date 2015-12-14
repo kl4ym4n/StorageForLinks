@@ -1,5 +1,5 @@
 <?php
-
+require 'libraries/PHPMailerAutoload.php';
 $user = 'root';
 $pass = 'azarta';
 //echo "Ololo!";
@@ -12,5 +12,4 @@ catch (PDOException $e) {
     die();
 }
 
-
-
+echo "Waiting...";
