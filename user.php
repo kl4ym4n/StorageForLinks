@@ -52,6 +52,22 @@ class User extends GeneralUser
         return $this->surname;
 
     }
+    public function setStatus($user_status)
+    {
+        $this->status = $user_status;
+    }
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function setRole($user_role)
+    {
+        $this->role = $user_role;
+    }
+    public function getRole()
+    {
+        return $this->role;
+    }
 
     public function addUserToDB()
     {

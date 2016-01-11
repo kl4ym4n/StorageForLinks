@@ -13,10 +13,7 @@ $string_form = '<form method = post action = reg_page.php>
     </form>';
     ?>
 
-
 <?php
-
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {

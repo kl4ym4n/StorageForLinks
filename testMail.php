@@ -8,9 +8,6 @@ class Mailer extends PHPMailer
 
     var $to_name;
     var $to_email;
-    var $From = null;
-    var $FromName = null;
-    var $Sender = null;
 
     function Mailer()
     {
@@ -48,21 +45,31 @@ class Mailer extends PHPMailer
     }
 }
 
-$sender = new Mailer();
+//$sender = new Mailer();
+//
+//$sender->Subject = 'Registration';
+//
+//$sender->Body = 'Ololo';
+//
+//$sender->AddAddress('kl4ym4n@gmail.com', "First");
+//
+//if(!$sender->Send())
+//{
+//    echo 'Cannot send letter!';
+//}
+//else
+//{
+//    echo 'Letter sended!';
+//}
+//$sender->ClearAddresses();
+//$sender->ClearAttachments();
 
-$sender->Subject = 'Registration';
 
-$sender->Body = 'Ololo';
-
-$sender->AddAddress('kl4ym4n@gmail.com', "First");
-
-if(!$sender->Send())
-{
-    echo 'Cannot send letter!';
-}
-else
-{
-    echo 'Letter sended!';
-}
-$sender->ClearAddresses();
-$sender->ClearAttachments();
+echo "sending...";
+echo "</br>";
+$message = "Please, follow the link below to complete registration!";
+$mail = 'kl4ym4n@gmail.com';
+$subj = 'Registration';
+//$letter = mail($mail, $subj, $message);
+//var_export($letter);
+echo "Done!";
