@@ -11,4 +11,8 @@ catch (PDOException $e) {
     die();
 }
 
-echo "Waiting...";
+ini_set('display_errors', 1);
+require_once 'bootstrap.php';
+
+
+//echo "Waiting...";
