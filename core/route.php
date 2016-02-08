@@ -10,27 +10,31 @@ class Route
         $action_name = 'index';
 
        $routes = explode('/', $_SERVER['REQUEST_URI']);
-        echo "Route[0]: $routes[0] </br>";
-        echo "Route[1]: $routes[1] </br>";
+        //echo "Route[0]: $routes[0] </br>";
+        //echo "Route[1]: $routes[1] </br>";
         //echo "Route[2]: $routes[2] </br>";
-       //echo $routes[2];
+        //echo $routes[2];
 
         // controller name
         if ( !empty($routes[1]) )
         {
-            echo "1</br>";
+            //echo "1</br>";
             $controller_name = $routes[1];
         }
 
         // action name
         if ( !empty($routes[2]) )
         {
-            echo "2</br>";
+            //echo "2</br>";
             $action_name = $routes[2];
         }
 
         // add prefix
         $model_name = 'model'.ucfirst($controller_name);
+        if ($controller_name == "Registration")
+        {
+            $model_name = "modelUser";
+        }
         $controller_name = 'controller'.ucfirst($controller_name);
         //$controller_name = $controller_name;
         $action_name = 'action'.ucfirst($action_name);
@@ -45,10 +49,13 @@ class Route
 
         $model_file = $model_name.'.php';
         $model_path = "models/".$model_file;
-        echo $model_path;
         if(file_exists($model_path))
         {
-            //include "models/".$model_file;
+            include "models/".$model_file;
+        }
+        else
+        {
+            echo "Can't find model";
         }
 
         // catch controller file
