@@ -1,8 +1,8 @@
 <?php
 
-$string_form = '<form method = post action = Index>
+$string_form = '<form method = post action = "Registration">
 
-        Login: <input type = text name = "login" value ="' . $_POST["login"] . '"> </br>
+        Login: <input type = text name = "login" value =""> </br>
         Mail: <input type = text name = "mail" value = ""></br>
         Name: <input type = text name = "username" value = ""></br>
         Surname: <input type = text name = "surname" value = ""></br>
@@ -14,5 +14,6 @@ $string_form = '<form method = post action = Index>
     </form>';
 
 echo $string_form;
-
 ?>
+
+<a href= \User\LoginPage >Login page</a>

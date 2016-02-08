@@ -1,9 +1,10 @@
 <h1>Login page</h1>
 
-<form method = post action = login_page.php>
+<form method = post action = "Login">
 
-    Login: <input type = text name = "login" value = ""></br>
-    Password: <input type = password name = "password" value = ""></br>
+    Login: <input type = text name = "userlogin" value = ""></br>
+    Password: <input type = password name = "userpassword" value = ""></br>
     <input type = submit name = "loginbutton" value = "Enter!">
-    <input type = submit name = "registration" value = "Registration">
 </form>
+
+<?php
