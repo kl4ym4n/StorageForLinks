@@ -8,7 +8,6 @@ $string_form = '<form method = post action = "Registration">
         Surname: <input type = text name = "surname" value = ""></br>
         Password: <input type = password name = "password" value = ""></br>
         Repeat password : <input type = password name = "repassword" value = ""></br>
-
         <input type = submit name = "regbutton " value = "Enter!">
 
     </form>';
