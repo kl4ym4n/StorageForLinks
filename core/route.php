@@ -9,7 +9,7 @@ class Route
         $controller_name = 'index';
         $action_name = 'index';
 
-       $routes = explode('/', $_SERVER['REQUEST_URI']);
+        $routes = explode('/', $_SERVER['REQUEST_URI']);
         //echo "Route[0]: $routes[0] </br>";
         //echo "Route[1]: $routes[1] </br>";
         //echo "Route[2]: $routes[2] </br>";
@@ -18,35 +18,25 @@ class Route
         // controller name
         if ( !empty($routes[1]) )
         {
-            //echo "1</br>";
             $controller_name = $routes[1];
         }
 
         // action name
         if ( !empty($routes[2]) )
         {
-            //echo "2</br>";
             $action_name = $routes[2];
         }
 
         // add prefix
         $model_name = 'model'.ucfirst($controller_name);
-        if ($controller_name == "Registration")
-        {
-            $model_name = "modelUser";
-        }
         $controller_name = 'controller'.ucfirst($controller_name);
-        //$controller_name = $controller_name;
         $action_name = 'action'.ucfirst($action_name);
 
-
-        echo "Model: $model_name <br>";
-        echo "Controller: $controller_name <br>";
-        echo "Action: $action_name <br>";
-
+        echo "Model: $model_name </br>";
+        echo "Controller: $controller_name </br>";
+        echo "Action: $action_name </br>";
 
         // catch model file
-
         $model_file = $model_name.'.php';
         $model_path = "models/".$model_file;
         if(file_exists($model_path))
@@ -55,7 +45,7 @@ class Route
         }
         else
         {
-            echo "Can't find model";
+            echo "Can't find model</br>";
         }
 
         // catch controller file
@@ -68,26 +58,22 @@ class Route
         }
         else
         {
-            echo "Can't find controller";
+            echo "Can't find controller</br>";
             //Route::ErrorPage404();
         }
 
         // create controller
         $controller = new $controller_name;
         $action = $action_name;
-        //echo "$action.'1' </br>";
-        //echo $controller_name;
         if(method_exists($controller, $action))
         {
             $controller->$action();
         }
         else
         {
-            //echo $action;
             echo "Can't find actions";
             //Route::ErrorPage404();
         }
-
     }
 
     function ErrorPage404()
