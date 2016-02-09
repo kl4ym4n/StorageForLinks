@@ -1,7 +1,5 @@
 <?php
-//include('index.php');
-//include('generalModel.php');
-class User extends GeneralUser
+class User extends GeneralModel
 {
     private $login, $email, $password, $name, $surname, $role, $status;
 
@@ -72,7 +70,7 @@ class User extends GeneralUser
     public function addUserToDB()
     {
         global $connection;
-        $sql = "INSERT INTO Users (login, password, name, surname, email) VALUES ('$this->login', '$this->password', '$this->name', '$this->surname', '$this->email')";
+        $sql = "INSERT INTO Users (login, password, name, surname, email, status) VALUES ('$this->login', '$this->password', '$this->name', '$this->surname', '$this->email', '$this->status')";
         $connection->exec($sql);
     }
 
@@ -106,11 +104,9 @@ class User extends GeneralUser
 
     public function sendEmail($email, $subject)
     {
-        $actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"."Page";
-        //$message = "Please, follow the link below to complete registration!";
+        //$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"."Page";
+        $actual_link = "http://$_SERVER[HTTP_HOST]/user/activate/?email=$email&login=$this->login";
         $content = "Click this link to activate your account. ". $actual_link;
-        //$mail = 'kl4ym4n@gmail.com';
-        //$subj = 'Registration';
         $letter = mail($email, $subject, $content);
     }
 
@@ -127,8 +123,6 @@ class User extends GeneralUser
             $queryPass = $connection->prepare("SELECT password, status FROM Users WHERE login ='$userlogin'");
             $queryPass->execute();
             $row = $queryPass->fetchAll();
-            //echo $row[0]["password"];
-            //$rowCountPass = $queryPass->rowCount();
             if ($this->checkEnteredPassword($userpassword, $row[0]["password"]))
             {
                 if ($row[0]["status"] == 0)
@@ -180,17 +174,40 @@ class User extends GeneralUser
             return false;
         }
     }
+
+    public function activateUser($parameters)
+    {
+        global $connection;
+        $userlogin = $parameters["login"];
+        $useremail = $parameters["email"];
+
+        $query = $connection->prepare("SELECT login, email, status FROM Users WHERE login = '$userlogin' AND email = '$useremail' AND status = '0'");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount > 0)
+        {
+            $query = $connection->prepare("UPDATE Users SET status = '1' WHERE login = '$userlogin' AND email = '$useremail' AND status = '0'");
+            $query->execute();
+            echo "Success!";
+        }
+        else
+        {
+            echo "Invalid url or your account have already activated!";
+        }
+    }
 }
 
-//$usr = new User();
+$usr = new User();
+$usr->setLogin("kl4ym4n");
+$usr->sendEmail("kl4ym4n@gmail.com", "Registration");
 //$usr->setLogin("ololosh");
 //$usr->setPassword("1234");
 //$usr->setName("Vasya");
 //$usr->setSurname("Kozlodoev");
 //$usr->setEmail("nagibator@mail.ru");
-////$usr->addUserToDB();
+//$usr->addUserToDB();
 //$usr->getLogin();
-//
+
 //$usr2 = new User();
 //$usr2->setLogin("ololosh");
 //$usr2->checkExistLogin();
