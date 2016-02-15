@@ -68,7 +68,7 @@ class Activation extends GeneralModel
             $updateRowCount = $query->rowCount();
             if ($updateRowCount > 0)
             {
-                echo "Success!";
+                echo "Success activation!";
             }
             else
             {

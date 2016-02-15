@@ -1,5 +1,8 @@
 <?php
 include_once "modelActivation.php";
+session_start();
+//set variable in appropriate place
+$_SESSION['is_auth'] = false;
 class User extends GeneralModel
 {
     private $login, $email, $password, $name, $surname, $role, $status;
@@ -129,7 +132,7 @@ class User extends GeneralModel
         global $connection;
         $userlogin = $parameters["userlogin"];
         $userpassword = $parameters["userpassword"];
-        $query = $connection->prepare("SELECT login, password, status FROM Users WHERE login = '$userlogin'");
+        $query = $connection->prepare("SELECT primary_key, login, password, status FROM Users WHERE login = '$userlogin'");
         $query->execute();
         $row = $query->fetchAll();
         $rowCount = $query->rowCount();
@@ -144,20 +147,28 @@ class User extends GeneralModel
                 if ($row[0]["status"] == 0)
                 {
                     echo "You need to activate your account first!";
+                    $_SESSION['is_auth'] = false;
                 }
                 else
                 {
-                    echo "Success!";
+                    echo "Success login!</br>";
+                    //session_start();
+                    $_SESSION['is_auth'] = true;
+                    $_SESSION['userlogin'] = $row[0]["login"];
+                    $_SESSION['userID'] = $row[0]["primary_key"];
+                    echo "Hello, ".$_SESSION['userlogin']. "!";
                 }
             }
             else
             {
                 echo "Incorrect password!";
+                $_SESSION['is_auth'] = false;
             }
         }
         else
         {
             echo "Incorrect login!";
+            $_SESSION['is_auth'] = false;
         }
     }
 
@@ -187,6 +198,68 @@ class User extends GeneralModel
             $activation->addActivationPropertiesToDB();
             $this->sendEmail($this->email, $hash, "Confirm registration");
 
+        }
+    }
+
+    public function getAllUserList()
+    {
+        global $connection;
+        $query = $connection->prepare("SELECT * FROM Users");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount == 0)
+        {
+            echo "No users in db";
+        }
+        else
+        {
+            foreach ($query as $row)
+            {
+                echo "User name: {$row['name']} ".
+                     "User surname: {$row['surname']} ".
+                     "User login: {$row['login']} ".
+                     "User email: {$row['email']} ".
+                     "User status: {$row['status']} "." <br> ";
+            }
+        }
+    }
+
+    public function getUserProfile()
+    {
+        global $connection;
+        $userID = $_SESSION['userID'];
+        //echo $userID;
+        $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount == 0)
+        {
+            echo "No such user in db";
+        }
+        else
+        {
+            $row = $query->fetchAll();
+            return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"]);
+        }
+    }
+
+    public function updateUserProfile($parameters)
+    {
+        global $connection;
+        $userID = $_SESSION['userID'];
+        if ($parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL)
+        {
+            echo "Please, fill empty fields!";
+        }
+        else
+        {
+            $mail = $parameters["mail"];
+            $username = $parameters["username"];
+            $surname = $parameters["surname"];
+            $password = $parameters["password"];
+
+            $query = $connection->prepare("UPDATE Users SET email =  '$mail', name = '$username', surname = '$surname' WHERE primary_key = '$userID'");
+            $query->execute();
         }
     }
 
@@ -221,6 +294,7 @@ class User extends GeneralModel
 }
 
 //$usr = new User();
+//$usr->showAllUserList();
 //$usr->deleteLink();
 //$curTime = $usr->getCurrentDateTime();
 //$offset = "2 days";
@@ -228,7 +302,6 @@ class User extends GeneralModel
 //echo "$curTime </br>";
 //echo $nextTime;
 
-//$usr = new User();
 //$usr->setLogin("kl4ym4n");
 //$usr->sendEmail("kl4ym4n@gmail.com", "Registration");
 //$usr->setLogin("ololosh");
