@@ -21,4 +21,22 @@ class ControllerLink extends Controller
     {
         $this->view->generate('viewAddLink.php', 'viewTemplate.php');
     }
+
+    public function actionPublicLinks()
+    {
+        $this->model->showAllPublicLinks();
+        $this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
+    }
+
+    public function actionViewDescription()
+    {
+        $link = "https://translate.google.com/#en/ru/appropriate";
+        $data = $this->model->getLinkDescription($link);
+        $this->view->generate('viewLinkDescription.php', 'viewTemplate.php', $data);
+    }
+
+    public function actionEditLink()
+    {
+
+    }
 }

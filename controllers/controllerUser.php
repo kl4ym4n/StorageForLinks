@@ -14,8 +14,6 @@ class ControllerUser extends Controller
 
     public function actionRegistration()
     {
-        //$user = new User();
-
         $login = $_POST['login'];
         $password = $_POST['password'];
         $repassword = $_POST['repassword'];
@@ -41,5 +39,21 @@ class ControllerUser extends Controller
         $this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
 
+    public function actionViewProfile()
+    {
+        $data = $this->model->getUserProfile();
+        $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
+    }
 
+    public function actionUpdateProfile()
+    {
+        $password = $_POST['password'];
+        $mail = $_POST['mail'];
+        $username = $_POST['username'];
+        $surname = $_POST['surname'];
+        $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname);
+        $this->model->updateUserProfile($params);
+        $data = $this->model->getUserProfile();
+        $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
+    }
 }
