@@ -8,4 +8,6 @@
     <input type = submit name = "linkbutton" value = "Get link">
 </form>
 
+<a href= \Link\AddLinkPage >Add link</a>
+
 <?php
