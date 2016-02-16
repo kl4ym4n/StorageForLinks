@@ -123,13 +123,13 @@ class Link extends GeneralModel
         }
     }
 
-    public function getLinkDescription($link)
+    public function getLinkDescription($linkID)
     {
         global $connection;
-        $userID = $_SESSION['userID'];
-        //$userID = 19;
+        //$userID = $_SESSION['userID'];
+        $userID = 19;
         //echo $userID;
-        $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND link = '$link'");
+        $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount == 0)
@@ -143,15 +143,34 @@ class Link extends GeneralModel
         }
     }
 
-    public function updateLink()
+    public function updateLink($parameters)
     {
-
+        global $connection;
+        $userID = $_SESSION['userID'];
+        $userID = 19;
+        $linkID = 5;
+        if ($parameters["link"] == NULL || $parameters["description"] == NULL || $parameters["header"] == NULL)
+        {
+            echo "Please, fill empty fields!";
+        }
+        else
+        {
+            $header = $parameters["header"];
+            $link = $parameters["link"];
+            $description = $parameters["description"];
+            $flag = $parameters["flag"];
+            echo $flag;
+            $query = $connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
+            $query->execute();
+        }
     }
 
     public function deleteLink()
     {
         global $connection;
-        $query = $connection->prepare("DELETE FROM ActivationLinks WHERE expire_time < NOW()");
+        $userID = 19;
+        $linkID = 5;
+        $query = $connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
         $query->execute();
     }
 

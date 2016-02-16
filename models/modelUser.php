@@ -263,6 +263,13 @@ class User extends GeneralModel
         }
     }
 
+    public function changeRole($userID, $roleID)
+    {
+        global $connection;
+        $query = $connection->prepare("UPDATE UserRoles SET role_id = '$roleID' WHERE user_id = '$userID'");
+        $query->execute();
+    }
+
     public function getCurrentDateTime()
     {
         date_default_timezone_set("Asia/Novosibirsk");
