@@ -39,6 +39,11 @@ class ControllerUser extends Controller
         $this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
 
+    public function actionViewAllUsers()
+    {
+
+    }
+
     public function actionViewProfile()
     {
         $data = $this->model->getUserProfile();

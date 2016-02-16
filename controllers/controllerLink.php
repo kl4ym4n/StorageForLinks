@@ -28,15 +28,35 @@ class ControllerLink extends Controller
         $this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
     }
 
-    public function actionViewDescription()
+    public function actionViewLink()
     {
-        $link = "https://translate.google.com/#en/ru/appropriate";
-        $data = $this->model->getLinkDescription($link);
+        $linkID = 5;
+        $data = $this->model->getLinkDescription($linkID);
         $this->view->generate('viewLinkDescription.php', 'viewTemplate.php', $data);
+    }
+
+    public function actionViewEditLink()
+    {
+        $linkID = 5;
+        $data = $this->model->getLinkDescription($linkID);
+        $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
+    }
+
+    public function actionDeleteLink()
+    {
+        $this->model->deleteLink();
     }
 
     public function actionEditLink()
     {
-
+        $header = $_POST["linkheader"];
+        $link = $_POST["userlink"];
+        $description = $_POST["linkdescription"];
+        $flag = $_POST["linkflag"];
+        $params = array("header" => $header, "link" => $link, "description" => $description, "flag" => $flag);
+        $this->model->updateLink($params);
+        $linkID = 5;
+        $data = $this->model->getLinkDescription($linkID);
+        $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
     }
 }
