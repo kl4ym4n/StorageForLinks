@@ -213,6 +213,8 @@ class User extends GeneralModel
         }
         else
         {
+            //$row = $query->fetchAll();
+            //return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"], "status" => $row[0]["status"]);
             foreach ($query as $row)
             {
                 echo "User name: {$row['name']} ".
@@ -224,10 +226,10 @@ class User extends GeneralModel
         }
     }
 
-    public function getUserProfile()
+    public function getUserProfile($userID)
     {
         global $connection;
-        $userID = $_SESSION['userID'];
+        //$userID = $_SESSION['userID'];
         //echo $userID;
         $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
         $query->execute();
@@ -239,14 +241,44 @@ class User extends GeneralModel
         else
         {
             $row = $query->fetchAll();
-            return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"]);
+            $role = $this->getUserRole(20);
+            return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
         }
     }
 
-    public function updateUserProfile($parameters)
+    public function getUserRole($userID)
     {
         global $connection;
-        $userID = $_SESSION['userID'];
+        $query = $connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount == 0)
+        {
+            echo "No such user in db";
+        }
+        else
+        {
+            $row = $query->fetchAll();
+            $roleID = $row[0]["role_id"];
+            $roleQuery = $connection->prepare("SELECT role FROM Roles WHERE primary_key = '$roleID'");
+            $roleQuery->execute();
+            $roleRowCount = $roleQuery->rowCount();
+            if($roleRowCount == 0)
+            {
+                echo "No such role in db";
+            }
+            else
+            {
+                $row = $roleQuery->fetchAll();
+                return $row[0]["role"];
+            }
+        }
+    }
+
+    public function updateUserProfile($parameters, $userID)
+    {
+        global $connection;
+        //$userID = $_SESSION['userID'];
         if ($parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL)
         {
             echo "Please, fill empty fields!";
@@ -257,8 +289,14 @@ class User extends GeneralModel
             $username = $parameters["username"];
             $surname = $parameters["surname"];
             $password = $parameters["password"];
-
-            $query = $connection->prepare("UPDATE Users SET email =  '$mail', name = '$username', surname = '$surname' WHERE primary_key = '$userID'");
+            $flag = $parameters["flag"];
+            if ($password != NULL)
+            {
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $query = $connection->prepare("UPDATE Users SET password =  '$hash' WHERE primary_key = '$userID'");
+                $query->execute();
+            }
+            $query = $connection->prepare("UPDATE Users SET email = '$mail', name = '$username', surname = '$surname', status = '$flag' WHERE primary_key = '$userID'");
             $query->execute();
         }
     }

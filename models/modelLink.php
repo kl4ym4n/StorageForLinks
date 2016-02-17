@@ -123,11 +123,11 @@ class Link extends GeneralModel
         }
     }
 
-    public function getLinkDescription($linkID)
+    public function getLinkDescription($userID, $linkID)
     {
         global $connection;
         //$userID = $_SESSION['userID'];
-        $userID = 19;
+        //$userID = 19;
         //echo $userID;
         $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
         $query->execute();
@@ -143,12 +143,12 @@ class Link extends GeneralModel
         }
     }
 
-    public function updateLink($parameters)
+    public function updateLink($parameters, $userID, $linkID)
     {
         global $connection;
-        $userID = $_SESSION['userID'];
-        $userID = 19;
-        $linkID = 5;
+        //$userID = $_SESSION['userID'];
+        //$userID = 19;
+        //$linkID = 5;
         if ($parameters["link"] == NULL || $parameters["description"] == NULL || $parameters["header"] == NULL)
         {
             echo "Please, fill empty fields!";
@@ -165,11 +165,11 @@ class Link extends GeneralModel
         }
     }
 
-    public function deleteLink()
+    public function deleteLink($userID, $linkID)
     {
         global $connection;
-        $userID = 19;
-        $linkID = 5;
+        //$userID = 19;
+        //$linkID = 5;
         $query = $connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
         $query->execute();
     }
