@@ -41,12 +41,15 @@ class ControllerUser extends Controller
 
     public function actionViewAllUsers()
     {
-
+        $this->model->getAllUserList();
+        $this->view->generate('viewUserList.php', 'viewTemplate.php');
+        //$data = $this->model->getAllUserList();
+        //$this->view->generate('viewUserList.php', 'viewTemplate.php', $data);
     }
 
     public function actionViewProfile()
     {
-        $data = $this->model->getUserProfile();
+        $data = $this->model->getUserProfile(18);
         $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 
@@ -56,9 +59,10 @@ class ControllerUser extends Controller
         $mail = $_POST['mail'];
         $username = $_POST['username'];
         $surname = $_POST['surname'];
-        $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname);
-        $this->model->updateUserProfile($params);
-        $data = $this->model->getUserProfile();
+        $flag = $_POST['statusflag'];
+        $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname, "flag" => $flag);
+        $this->model->updateUserProfile($params, 18);
+        $data = $this->model->getUserProfile(18);
         $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 }

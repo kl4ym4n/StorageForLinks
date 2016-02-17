@@ -31,20 +31,24 @@ class ControllerLink extends Controller
     public function actionViewLink()
     {
         $linkID = 5;
-        $data = $this->model->getLinkDescription($linkID);
+        $userID = 19;
+        $data = $this->model->getLinkDescription($userID, $linkID);
         $this->view->generate('viewLinkDescription.php', 'viewTemplate.php', $data);
     }
 
     public function actionViewEditLink()
     {
         $linkID = 5;
-        $data = $this->model->getLinkDescription($linkID);
+        $userID = 19;
+        $data = $this->model->getLinkDescription($userID, $linkID);
         $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
     }
 
     public function actionDeleteLink()
     {
-        $this->model->deleteLink();
+        $linkID = 5;
+        $userID = 19;
+        $this->model->deleteLink($userID, $linkID);
     }
 
     public function actionEditLink()
@@ -54,9 +58,11 @@ class ControllerLink extends Controller
         $description = $_POST["linkdescription"];
         $flag = $_POST["linkflag"];
         $params = array("header" => $header, "link" => $link, "description" => $description, "flag" => $flag);
-        $this->model->updateLink($params);
         $linkID = 5;
-        $data = $this->model->getLinkDescription($linkID);
+        $userID = 19;
+        $this->model->updateLink($params, $userID, $linkID);
+        //$linkID = 5;
+        $data = $this->model->getLinkDescription($userID, $linkID);
         $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
     }
 }
