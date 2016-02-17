@@ -1,5 +1,4 @@
 <?php
-
 $checkedFlag = '';
 if ($data["flag"] == '0')
 {
