@@ -1,5 +1,4 @@
 <?php
-
 require_once 'core/generalModel.php';
 require_once 'core/generalView.php';
 require_once 'core/generalController.php';
