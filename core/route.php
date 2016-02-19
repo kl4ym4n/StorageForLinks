@@ -32,9 +32,9 @@ class Route
         $controller_name = 'controller'.ucfirst($controller_name);
         $action_name = 'action'.ucfirst($action_name);
 
-        echo "Model: $model_name </br>";
-        echo "Controller: $controller_name </br>";
-        echo "Action: $action_name </br>";
+        //echo "Model: $model_name </br>";
+        //echo "Controller: $controller_name </br>";
+        //echo "Action: $action_name </br>";
 
         // catch model file
         $model_file = $model_name.'.php';
@@ -45,7 +45,7 @@ class Route
         }
         else
         {
-            echo "Can't find model</br>";
+            //echo "Can't find model</br>";
         }
 
         // catch controller file
@@ -59,7 +59,7 @@ class Route
         else
         {
             echo "Can't find controller</br>";
-            //Route::ErrorPage404();
+            Route::ErrorPage404();
         }
 
         // create controller
@@ -72,7 +72,7 @@ class Route
         else
         {
             echo "Can't find actions";
-            //Route::ErrorPage404();
+            Route::ErrorPage404();
         }
     }
 
