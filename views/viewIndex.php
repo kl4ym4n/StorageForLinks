@@ -1,18 +1,16 @@
-<div class="navbar navbar-default">
-   <div class="container">
-      <div class="navbar-header">
-         <a class="navbar-brand" href="#">Link Storage</a>
-      </div>
-      <ul class="nav navbar-nav">
-         <li class="active"><a href= index>Home</a></li>
-         <li><a href="#">Public Links</a></li>
-      </ul>
+<?php
+class MainView extends View
+{
+   public $head, $body;
+   public function __construct()
+   {
+      $this->template = '<!DOCTYPE html>
+                          <head> %s </head>
+                          <body> %s </body>';
 
-      <div class="nav navbar-nav navbar-right">
-         <a href="User/Login" class="btn btn-default">Sign in</a>
+      $this->head = new ViewHead();
+      $this->body = new ViewBody();
+   }
+}
 
-         <button type="button" class="btn btn-default navbar-btn">Registration</button>
-      </div>
-   </div>
-</div>
 
