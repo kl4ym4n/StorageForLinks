@@ -1,7 +1,7 @@
 <?php
 class ControllerUser extends Controller
 {
-    function __construct()
+    public function __construct()
     {
         $this->model = new User();
         $this->view = new View();

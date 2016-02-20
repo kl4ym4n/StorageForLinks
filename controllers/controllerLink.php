@@ -1,7 +1,7 @@
 <?php
 class ControllerLink extends Controller
 {
-    function __construct()
+    public function __construct()
     {
         $this->model = new Link();
         $this->view = new View();

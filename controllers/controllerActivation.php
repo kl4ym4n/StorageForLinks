@@ -1,7 +1,7 @@
 <?php
 class ControllerActivation extends Controller
 {
-    function __construct()
+    public function __construct()
     {
         $this->model = new Activation();
         $this->view = new View();
