@@ -4,16 +4,16 @@ class View
     public $template;
     public $args = array();
 
-    public function _toString()
+    public function __toString()
     {
         ob_start();
-
-        ob_end_clean();
+        $this->render();
+        return ob_get_clean();
     }
 
     public function render()
     {
-
+        print call_user_func_array('sprintf', array_merge(array($this->template), $this->args));
     }
 
     public function setParameters()
