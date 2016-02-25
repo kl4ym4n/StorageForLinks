@@ -1,7 +1,4 @@
 <?php
-include_once "viewHeader.php";
-include_once "viewContent.php";
-include_once "viewFooter.php";
 class ViewBody extends View
 {
     public $header, $content, $footer;

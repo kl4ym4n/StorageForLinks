@@ -1,7 +1,5 @@
 <?php
-include_once "viewHead.php";
-include_once "viewBody.php";
-class MainView extends View
+class ViewIndex extends View
 {
    public $head, $body;
    public function __construct()
@@ -13,5 +11,7 @@ class MainView extends View
       $this->head = new ViewHead();
       $this->body = new ViewBody();
       $this->args = array($this->head, $this->body);
+       //$srcDir = __DIR__ ;
+       //var_dump($srcDir);
    }
 }
