@@ -5,6 +5,7 @@ class Route
 
     static function start()
     {
+
         // default action and controller
         $controller_name = 'index';
         $action_name = 'index';
