@@ -18,7 +18,7 @@ class View
 
     public function setParameters()
     {
-
+        
     }
 
     function generate($content_view, $template_view, $data = null)
