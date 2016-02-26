@@ -20,7 +20,9 @@ function autoload($className)
         $file = sprintf('%s%s%s', __DIR__, $path, $fileName);
         if(is_file($file))
         {
-            include_once $file;
+            require_once $file;
+            return;
+            //var_dump($file);
         }
 
     }
