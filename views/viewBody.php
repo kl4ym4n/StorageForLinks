@@ -2,15 +2,14 @@
 class ViewBody extends View
 {
     public $header, $content, $footer;
-    public function __construct()
+    public function __construct($contentView)
     {
-        $this->template = '<!DOCTYPE html>
-                          <div class = "header"> %s </div>
-                          <div class = "content"> %s </div>
-                          <div class = "footer"> %s </div>';
+        $this->template = ' <div class = "header"> %s </div>
+                            <div class = "content"> %s </div>
+                            <div class = "footer"> %s </div>';
 
         $this->header = new ViewHeader();
-        $this->content = new ViewContent();
+        $this->content = new ViewContent($contentView);
         $this->footer = new ViewFooter();
 
         $this->args = array($this->header, $this->content, $this->footer);

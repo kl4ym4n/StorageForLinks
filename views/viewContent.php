@@ -1,8 +1,11 @@
 <?php
 class ViewContent extends View
 {
-    public function __construct()
+    public function __construct($contentView)
     {
-        $this->template = '';
+
+        $className = 'view' . $contentView;
+        $classView = new $className;
+        $this->template = $classView->getContent();
     }
 }
