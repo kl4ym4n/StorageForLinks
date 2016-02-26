@@ -27,7 +27,9 @@ class ControllerUser extends Controller
 
     public function actionLoginPage()
     {
-        $this->view->generate('viewLogin.php', 'viewTemplate.php');
+        //$this->view->generate('viewLogin.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("Login");
+        $this->view->render();
     }
 
     public function actionLogin()
