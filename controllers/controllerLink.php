@@ -19,13 +19,17 @@ class ControllerLink extends Controller
 
     public function actionAddLinkPage()
     {
-        $this->view->generate('viewAddLink.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("AddLink");
+        $this->view->render();
+        //$this->view->generate('viewAddLink.php', 'viewTemplate.php');
     }
 
     public function actionPublicLinks()
     {
         $this->model->showAllPublicLinks();
-        $this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("PublicLinks");
+        $this->view->render();
+        //$this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
     }
 
     public function actionViewLink()

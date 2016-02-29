@@ -9,7 +9,9 @@ class ControllerUser extends Controller
 
     public function actionRegistrationPage()
     {
-        $this->view->generate('viewRegist.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("Registration");
+        $this->view->render();
+        //$this->view->generate('viewRegistration.php', 'viewTemplate.php');
     }
 
     public function actionRegistration()
@@ -22,7 +24,9 @@ class ControllerUser extends Controller
         $surname = $_POST['surname'];
         $params = array("login" => $login, "password" => $password, "repassword" => $repassword, "mail" => $mail, "username" => $username, "surname" => $surname);
         $this->model->registerUser($params);
-        $this->view->generate('viewRegist.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("Registration");
+        $this->view->render();
+        //$this->view->generate('viewRegistration.php', 'viewTemplate.php');
     }
 
     public function actionLoginPage()
