@@ -5,20 +5,20 @@ class ViewHeader extends View
     {
         $this->template = '<div class="navbar navbar-default">
                               <div class="container">
-                                <div class="navbar-header">
-                                <a class="navbar-brand" href = "/index">Link Storage</a>
-                                </div>
-                                 <ul class="nav navbar-nav">
-                                 <li class="active"><a href = "/index">Home</a></li>
-                                 <li><a href="#">Public Links</a></li>
-                                 </ul>
+                                    <div class="navbar-header">
+                                    <a class="navbar-brand" href = "/index">Link Storage</a>
+                                    </div>
+                                     <ul class="nav navbar-nav">
+                                     <li class="active"><a href = "/index">Home</a></li>
+                                     <li><a href="/Link/PublicLinks">Public Links</a></li>
+                                     </ul>
 
-                            <div class="nav navbar-nav navbar-right">
-                                <a href="/User/LoginPage" class="btn btn-default">Sign in</a>
+                                    <div class="nav navbar-nav navbar-right">
+                                        <a href="/User/LoginPage" class="btn btn-default navbar-btn">Sign in</a>
+                                        <a href="/User/RegistrationPage" class="btn btn-default navbar-btn">Registration</a>
 
-                                <button type="button" class="btn btn-default navbar-btn">Registration</button>
-                            </div>
-                            </div>
+                                    </div>
+                              </div>
                            </div>';
     }
 }
