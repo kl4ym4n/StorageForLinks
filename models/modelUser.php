@@ -101,8 +101,8 @@ class User extends GeneralModel
         {
             if ($parameters["password"] != $parameters["repassword"])
             {
-                echo "Incorrect repeated password!";
-                //echo $string_form;
+                $alertMessage ='<div class="alert alert-danger">Incorrect repeated password!</div>';
+                echo $alertMessage;
             }
             else
             {
@@ -138,10 +138,6 @@ class User extends GeneralModel
         $rowCount = $query->rowCount();
         if ($rowCount > 0)
         {
-            //make one query!!!
-//            $queryPass = $connection->prepare("SELECT password, status FROM Users WHERE login ='$userlogin'");
-//            $queryPass->execute();
-//            $row = $queryPass->fetchAll();
             if ($this->checkEnteredPassword($userpassword, $row[0]["password"]))
             {
                 if ($row[0]["status"] == 0)
