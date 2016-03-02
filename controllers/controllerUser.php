@@ -42,7 +42,9 @@ class ControllerUser extends Controller
         $userpassword = $_POST['userpassword'];
         $parameters = array("userlogin" => $userlogin, "userpassword" => $userpassword);
         $this->model->checkUserLogin($parameters);
-        $this->view->generate('viewLogin.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("Login");
+        $this->view->render();
+        //$this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
 
     public function actionViewAllUsers()

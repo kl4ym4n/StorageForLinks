@@ -26,26 +26,46 @@ class ControllerLink extends Controller
 
     public function actionPublicLinks()
     {
-        $this->model->showAllPublicLinks();
-        $this->view = new ViewIndex("PublicLinks");
+        $data = $this->model->getAllPublicLinks();
+        //$data[] = "PublicLinks";
+        $this->view = new ViewIndex("PublicLinks", $data);
+        //$this->view->setParameters($data);
         $this->view->render();
         //$this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
     }
 
     public function actionViewLink()
     {
-        $linkID = 5;
-        $userID = 19;
-        $data = $this->model->getLinkDescription($userID, $linkID);
-        $this->view->generate('viewLinkDescription.php', 'viewTemplate.php', $data);
+        if(isset($_GET['linkid']))
+        {
+
+            $linkID = $_GET['linkid'];
+            $data = $this->model->getPublicLinkDescription($linkID);
+            //$data[] = $linkID;
+            $this->view = new ViewIndex("LinkInfo", $data);
+            //$this->view->setParameters($data);
+            $this->view->render();
+            //$this->view->generate('viewLinkInfo.php', 'viewTemplate.php', $data);
+        }
+        else
+        {
+            echo "Invalid link!";
+        }
     }
 
     public function actionViewEditLink()
     {
-        $linkID = 5;
-        $userID = 19;
-        $data = $this->model->getLinkDescription($userID, $linkID);
-        $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
+        if(isset($_GET['linkid'])) {
+
+            $linkID = $_GET['linkid'];
+            $userID = 19;
+            $data = $this->model->getPublicLinkDescription($linkID);
+            //$this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
+
+            $this->view = new ViewIndex("EditLink", $data);
+            //$this->view->setParameters($data);
+            $this->view->render();
+        }
     }
 
     public function actionDeleteLink()
