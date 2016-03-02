@@ -43,12 +43,30 @@ class Link extends GeneralModel
         }
     }
 
-    public function showAllPublicLinks()
+    public function getAllPublicLinks()
     {
         global $connection;
-        $query = $connection->prepare("SELECT header, link, description, add_date FROM Links WHERE private_flag = '0'");
+        $recLimit = 2;
+        $data = array();
+        $linkID = array();
+        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
+        $queryCount->execute();
+        $rowCount = $queryCount->rowCount();
+        $pageCount = round ($rowCount / $recLimit);
+        if (isset($_GET{'page'} ))
+        {
+            $page = $_GET{'page'};
+            $offset = $recLimit * $page ;
+        }
+        else
+        {
+            $page = 0;
+            $offset = 0;
+        }
+        //echo $_GET{'page'};
+        $query = $connection->prepare("SELECT primary_key, header, link, private_flag FROM Links  WHERE private_flag = '0' LIMIT $offset, $recLimit");
         $query->execute();
-        $rowCount = $query->rowCount();
+        //$rowCount = $query->rowCount();
         if ($rowCount == 0)
         {
             echo "No public links in database";
@@ -56,13 +74,20 @@ class Link extends GeneralModel
         else
         {
             //$result = $query->fetchAll();
-            foreach ($query as $row)
+            //$i = 0;
+            foreach ($query as $result)
             {
-                echo "Header: {$row['header']} ".
-                    "Link: {$row['link']} ". "Description: {$row['description']} ". "Creation date: {$row['add_date']} "." <br> ";
+//                $row = array("id" => $result['primary_key'], "link" => $result['link'], "header" => $result['header'],
+//                    "description" => $result['description'], "flag" => $result['private_flag'], "date" => $result['add_date']);
+                $row = array("header" => $result['header'], "link" => $result['link']);
+                $data[] = $row;
+                //$i++;
+                $linkID[] = $result['primary_key'];
 
             }
         }
+        $params = array($linkID, $data, $page, $pageCount, $recLimit);
+        return $params;
     }
 
     public function showUserLinks()
@@ -87,42 +112,6 @@ class Link extends GeneralModel
         }
     }
 
-    public function pagination($recLimit, $query, $rowCount)
-    {
-        if (isset($_GET{'page'} ))
-        {
-            $page = $_GET{'page'} + 1;
-            $offset = $recLimit * $page ;
-            echo "Page = ".$page;
-        }
-        else
-        {
-            $page = 0;
-            $offset = 0;
-            echo "Page = ".$page;
-        }
-
-        $pageCount = round ($rowCount / $recLimit);
-
-        if ($page == 0)
-        {
-            for ($i = 1; $i < $pageCount; $i++)
-            {
-                $currPage = $i - 1;
-                if ($i == $page - 1)
-                {
-                    echo "<span href= \"http://test1/Link/PublicLinks?page=$i\" >" . "$currPage </sp> " . " | ";
-                }
-                else
-                {
-                    echo "<a href= \"http://test1/Link/PublicLinks?page=$i\" >" . "$currPage </a> " . " | ";
-                }
-            }
-            echo "<a href=\"http://test1/Link/PublicLinks?page=$page\">" . " Next $recLimit messages</a>";
-            echo "</br>";
-        }
-    }
-
     public function getLinkDescription($userID, $linkID)
     {
         global $connection;
@@ -139,7 +128,24 @@ class Link extends GeneralModel
         else
         {
             $row = $query->fetchAll();
-            return array("link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
+            return array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
+        }
+    }
+
+    public function getPublicLinkDescription($linkID)
+    {
+        global $connection;
+        $query = $connection->prepare("SELECT * FROM Links WHERE primary_key = '$linkID'");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount == 0)
+        {
+            echo "No such link in db";
+        }
+        else
+        {
+            $row = $query->fetchAll();
+            return array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
         }
     }
 
