@@ -3,7 +3,7 @@ class View
 {
     public $template;
     public $args = array();
-
+    protected $data;
     public function __toString()
     {
         ob_start();
@@ -16,9 +16,10 @@ class View
         print call_user_func_array('sprintf', array_merge(array($this->template), $this->args));
     }
 
-    public function setParameters()
+    public function setParameters($params)
     {
-        
+        $this->data = $params;
+        //echo $this->data[0]['header'];
     }
 
     function generate($content_view, $template_view, $data = null)
