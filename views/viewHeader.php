@@ -10,7 +10,7 @@ class ViewHeader extends View
                                     </div>
                                      <ul class="nav navbar-nav">
                                      <li class="active"><a href = "/index">Home</a></li>
-                                     <li><a href="/Link/PublicLinks">Public Links</a></li>
+                                     <li><a href="/Link/PublicLinks/?page=0">Public Links</a></li>
                                      </ul>
 
                                     <div class="nav navbar-nav navbar-right">
