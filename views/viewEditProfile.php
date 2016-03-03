@@ -1,10 +1,19 @@
 <?php
 class ViewEditProfile extends View
 {
-    public function __construct()
+    public function __construct($data)
     {
-        $this->template = 'div class="container">
-                <form class= "form-horizontal" method = post action="UpdateProfile">
+        $checkedFlag = '';
+        if ($data["status"] == '0')
+        {
+            $checkedFlag = '';
+        }
+        else
+        {
+            $checkedFlag = 'checked';
+        }
+        $this->template = '<div class="container">
+                <form class= "form-horizontal" method = post action="/User/UpdateProfile/?userid='.$data["id"].'">
 
                 <fieldset>
 
@@ -13,7 +22,7 @@ class ViewEditProfile extends View
                 <div class="control-group">
                     <label class="control-label">Login</label>
                         <div class="controls">
-                        <input type="text" name = "login" value ="" required autofocus>
+                        <input type="text" name = "login" value ="'.$data['login'].'" required disabled>
                         </div>
                 </div>
 
@@ -21,21 +30,21 @@ class ViewEditProfile extends View
                 <div class="control-group">
                     <label class="control-label">Mail</label>
                         <div class="controls">
-                        <input type="text" name = "mail" value ="" required>
+                        <input type="text" name = "mail" value ="'.$data['email'].'" required autofocus>
                         </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label">Name</label>
                         <div class="controls">
-                        <input type="text" name = "username" value ="" required>
+                        <input type="text" name = "username" value ="'.$data['name'].'" required>
                         </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label">Surname</label>
                         <div class="controls">
-                        <input type="text" name = "surname" value ="" required>
+                        <input type="text" name = "surname" value ="'.$data['surname'].'" required>
                         </div>
                 </div>
 
@@ -49,14 +58,14 @@ class ViewEditProfile extends View
                 <div class="control-group">
                     <label class="control-label">Role</label>
                         <div class="controls">
-                        <input type="password" name = "role" value ="" required>
+                        <input type="text" name = "role" value ="'.$data['role'].'" required>
                         </div>
                 </div>
 
 
                 <div class="checkbox">
                       <input type="hidden" name="statusflag" value="0" />
-                      <label><input type="checkbox" name = "statusflag" value = "1">Set status active</label>
+                      <label><input type="checkbox" name = "statusflag" value = "1" '.$checkedFlag.'>Set status active</label>
                 </div>
 
                 <div class="control-group">
@@ -70,27 +79,19 @@ class ViewEditProfile extends View
                 </form>';
     }
 }
-$checkedFlag = '';
-if ($data["status"] == '0')
-{
-    $checkedFlag = '';
-}
-else
-{
-    $checkedFlag = 'checked';
-}
-$stringForm = '<form method = post action = "UpdateProfile">
 
-    Login: <input type = text name = "login" value = "'. $data["login"] .'" disabled> </br>
-    Mail: <input type = text name = "mail" value = "'. $data["email"] .'"></br>
-    Name: <input type = text name = "username" value = "'. $data["name"] .'"></br>
-    Surname: <input type = text name = "surname" value = "'. $data["surname"] .'"></br>
-    Password: <input type = password name = "password" value = ""></br>
-    Role: <input type = text name = "role" value = ""></br>
-             <input type="hidden" name="statusflag" value="0" />
-    Status Active: <input type = checkbox name = "statusflag" value = "1" ' .$checkedFlag.' ></br>
-    <input type = submit name = "savebutton " value = "Save">
-
-</form>';
-
-echo $stringForm;
+//$stringForm = '<form method = post action = "UpdateProfile">
+//
+//    Login: <input type = text name = "login" value = "'. $data["login"] .'" disabled> </br>
+//    Mail: <input type = text name = "mail" value = "'. $data["email"] .'"></br>
+//    Name: <input type = text name = "username" value = "'. $data["name"] .'"></br>
+//    Surname: <input type = text name = "surname" value = "'. $data["surname"] .'"></br>
+//    Password: <input type = password name = "password" value = ""></br>
+//    Role: <input type = text name = "role" value = ""></br>
+//             <input type="hidden" name="statusflag" value="0" />
+//    Status Active: <input type = checkbox name = "statusflag" value = "1" ' .$checkedFlag.' ></br>
+//    <input type = submit name = "savebutton " value = "Save">
+//
+//</form>';
+//
+//echo $stringForm;

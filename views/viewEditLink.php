@@ -14,7 +14,7 @@ class ViewEditLink extends View
         }
 
         $this->template = '<div class="container">
-                            <form class= "form-horizontal" method = post action="EditLink">
+                            <form class= "form-horizontal" method = post action="/Link/EditLink/?linkid='.$data["id"].'">
 
                             <fieldset>
 
@@ -59,7 +59,7 @@ class ViewEditLink extends View
 }
 
 
-
+//header("Location:/Link/ViewLink/?linkid=".$data["id"]);
 //$stringForm = '<form method = post action = "EditLink">
 //    Header: <input type = text name = "linkheader" value = "'. $data["header"] .'"></br>
 //    Link: <input type = text name = "userlink" value = "'. $data["link"] .'"></br>

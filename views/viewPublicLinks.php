@@ -62,7 +62,7 @@ class ViewPublicLinks extends View
                                                                                 </li>
                                                                                 <li class="active"> <a href="/Link/PublicLinks/?page='.$data[2].'">'.$currPage.'</a>';
                                         }
-                                        else  if ($data[2] != 0 &&  ($data[2] + 1) != $data[3] && ($data[3] - $data[2]) > 1 )
+                                        else if ($data[2] != 0 &&  ($data[2] + 1) != $data[3] && ($data[3] - $data[2]) > 1 )
                                         {
                                             $currPage =  $data[2] + 1;
                                             $nextPage = $data[2] + 1;
