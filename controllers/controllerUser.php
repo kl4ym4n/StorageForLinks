@@ -47,18 +47,23 @@ class ControllerUser extends Controller
         //$this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
 
-    public function actionViewAllUsers()
+    public function actionAllUsers()
     {
-        $this->model->getAllUserList();
-        $this->view->generate('viewUserList.php', 'viewTemplate.php');
+        $data = $this->model->getAllUserList();
+        $this->view = new ViewIndex("UserList", $data);
+        $this->view->render();
+        //$this->view->generate('viewUserList.php', 'viewTemplate.php');
         //$data = $this->model->getAllUserList();
         //$this->view->generate('viewUserList.php', 'viewTemplate.php', $data);
     }
 
     public function actionViewProfile()
     {
-        $data = $this->model->getUserProfile(18);
-        $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
+        $userID = $_GET['userid'];
+        $data = $this->model->getUserProfile($userID);
+        $this->view = new ViewIndex("EditProfile", $data);
+        $this->view->render();
+        //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 
     public function actionUpdateProfile()
@@ -69,8 +74,12 @@ class ControllerUser extends Controller
         $surname = $_POST['surname'];
         $flag = $_POST['statusflag'];
         $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname, "flag" => $flag);
-        $this->model->updateUserProfile($params, 18);
-        $data = $this->model->getUserProfile(18);
-        $this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
+
+        $userID = $_GET['userid'];
+        $this->model->updateUserProfile($params, $userID);
+        $data = $this->model->getUserProfile($userID);
+        $this->view = new ViewIndex("EditProfile", $data);
+        $this->view->render();
+        //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 }

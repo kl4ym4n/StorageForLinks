@@ -70,23 +70,33 @@ class ControllerLink extends Controller
 
     public function actionDeleteLink()
     {
-        $linkID = 5;
-        $userID = 19;
-        $this->model->deleteLink($userID, $linkID);
+        if(isset($_GET['linkid']))
+        {
+
+            $linkID = 5;
+            $userID = 19;
+            $this->model->deleteLink($userID, $linkID);
+        }
     }
 
     public function actionEditLink()
     {
-        $header = $_POST["linkheader"];
-        $link = $_POST["userlink"];
-        $description = $_POST["linkdescription"];
-        $flag = $_POST["linkflag"];
-        $params = array("header" => $header, "link" => $link, "description" => $description, "flag" => $flag);
-        $linkID = 5;
-        $userID = 19;
-        $this->model->updateLink($params, $userID, $linkID);
-        //$linkID = 5;
-        $data = $this->model->getLinkDescription($userID, $linkID);
-        $this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
+        if(isset($_GET['linkid']))
+        {
+            $header = $_POST["linkheader"];
+            $link = $_POST["userlink"];
+            $description = $_POST["linkdescription"];
+            $flag = $_POST["linkflag"];
+            $params = array("header" => $header, "link" => $link, "description" => $description, "flag" => $flag);
+            $linkID = $_GET['linkid'];
+            $userID = 19;
+            $this->model->updateLink($params, $userID, $linkID);
+            //$linkID = 5;
+            $data = $this->model->getLinkDescription($userID, $linkID);
+            //$this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
+            $this->view = new ViewIndex("LinkInfo", $data);
+            //$this->view->setParameters($data);
+            $this->view->render();
+        }
     }
 }
