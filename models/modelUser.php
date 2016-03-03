@@ -200,9 +200,26 @@ class User extends GeneralModel
     public function getAllUserList()
     {
         global $connection;
-        $query = $connection->prepare("SELECT * FROM Users");
+        $recLimit = 3;
+        $data = array();
+        $userID = array();
+        $queryCount = $connection->prepare("SELECT primary_key FROM Users");
+        $queryCount->execute();
+        $rowCount = $queryCount->rowCount();
+        $pageCount = round ($rowCount / $recLimit);
+        if (isset($_GET{'page'} ))
+        {
+            $page = $_GET{'page'};
+            $offset = $recLimit * $page ;
+        }
+        else
+        {
+            $page = 0;
+            $offset = 0;
+        }
+
+        $query = $connection->prepare("SELECT * FROM Users LIMIT $offset, $recLimit");
         $query->execute();
-        $rowCount = $query->rowCount();
         if($rowCount == 0)
         {
             echo "No users in db";
@@ -210,16 +227,16 @@ class User extends GeneralModel
         else
         {
             //$row = $query->fetchAll();
-            //return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"], "status" => $row[0]["status"]);
-            foreach ($query as $row)
+            foreach ($query as $result)
             {
-                echo "User name: {$row['name']} ".
-                     "User surname: {$row['surname']} ".
-                     "User login: {$row['login']} ".
-                     "User email: {$row['email']} ".
-                     "User status: {$row['status']} "." <br> ";
+                $row = array("name" => $result["name"], "surname" => $result["surname"], "login" => $result["login"],
+                    "email" => $result["email"], "status" => $result["status"]);
+                $data[] = $row;
+                $userID[] = $result['primary_key'];
             }
         }
+        $params = array($userID, $data, $page, $pageCount, $recLimit);
+        return $params;
     }
 
     public function getUserProfile($userID)
@@ -230,6 +247,8 @@ class User extends GeneralModel
         $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
         $query->execute();
         $rowCount = $query->rowCount();
+        $row = 0;
+        $role = 0;
         if($rowCount == 0)
         {
             echo "No such user in db";
@@ -237,9 +256,11 @@ class User extends GeneralModel
         else
         {
             $row = $query->fetchAll();
-            $role = $this->getUserRole(20);
-            return array("name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"], "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
+            $role = $this->getUserRole($userID);
+
         }
+        return array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
+            "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
     }
 
     public function getUserRole($userID)
@@ -247,6 +268,7 @@ class User extends GeneralModel
         global $connection;
         $query = $connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
         $query->execute();
+        $row = 0;
         $rowCount = $query->rowCount();
         if($rowCount == 0)
         {
@@ -266,15 +288,16 @@ class User extends GeneralModel
             else
             {
                 $row = $roleQuery->fetchAll();
-                return $row[0]["role"];
+
             }
         }
+        return $row[0]["role"];
     }
 
     public function updateUserProfile($parameters, $userID)
     {
         global $connection;
-        //$userID = $_SESSION['userID'];
+        //echo $userID;
         if ($parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL)
         {
             echo "Please, fill empty fields!";

@@ -63,27 +63,21 @@ class Link extends GeneralModel
             $page = 0;
             $offset = 0;
         }
-        //echo $_GET{'page'};
         $query = $connection->prepare("SELECT primary_key, header, link, private_flag FROM Links  WHERE private_flag = '0' LIMIT $offset, $recLimit");
         $query->execute();
-        //$rowCount = $query->rowCount();
         if ($rowCount == 0)
         {
             echo "No public links in database";
         }
         else
         {
-            //$result = $query->fetchAll();
-            //$i = 0;
             foreach ($query as $result)
             {
 //                $row = array("id" => $result['primary_key'], "link" => $result['link'], "header" => $result['header'],
 //                    "description" => $result['description'], "flag" => $result['private_flag'], "date" => $result['add_date']);
                 $row = array("header" => $result['header'], "link" => $result['link']);
                 $data[] = $row;
-                //$i++;
                 $linkID[] = $result['primary_key'];
-
             }
         }
         $params = array($linkID, $data, $page, $pageCount, $recLimit);
@@ -93,9 +87,26 @@ class Link extends GeneralModel
     public function showUserLinks()
     {
         global $connection;
-        $query = $connection->prepare("SELECT link, header, private_flag FROM Links WHERE user_id = '$this->userID'");
+        $recLimit = 2;
+        $data = array();
+        $linkID = array();
+        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
+        $queryCount->execute();
+        $rowCount = $queryCount->rowCount();
+        $pageCount = round ($rowCount / $recLimit);
+        if (isset($_GET{'page'} ))
+        {
+            $page = $_GET{'page'};
+            $offset = $recLimit * $page ;
+        }
+        else
+        {
+            $page = 0;
+            $offset = 0;
+        }
+        $query = $connection->prepare("SELECT link, header, private_flag FROM Links WHERE user_id = '$this->userID' LIMIT $offset, $recLimit");
         $query->execute();
-        $rowCount = $query->rowCount();
+        //$rowCount = $query->rowCount();
         if ($rowCount == 0)
         {
             echo "No user links in database";
@@ -103,13 +114,18 @@ class Link extends GeneralModel
         else
         {
             //$result = $query->fetchAll();
-            foreach ($query as $row)
+            foreach ($query as $result)
             {
-                echo "Header: {$row['header']} ".
-                    "Link: {$row['link']} <br> ";
+                $row = array("link" => $result['link'], "header" => $result['header'],
+                    "description" => $result['description'], "flag" => $result['private_flag'], "date" => $result['add_date']);
+                $data[] = $row;
+                //$i++;
+                $linkID[] = $result['primary_key'];
 
             }
         }
+        $params = array($linkID, $data, $page, $pageCount, $recLimit);
+        return $params;
     }
 
     public function getLinkDescription($userID, $linkID)
@@ -165,7 +181,7 @@ class Link extends GeneralModel
             $link = $parameters["link"];
             $description = $parameters["description"];
             $flag = $parameters["flag"];
-            echo $flag;
+            //echo $flag;
             $query = $connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
             $query->execute();
         }
