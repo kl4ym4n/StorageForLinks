@@ -9,43 +9,71 @@ class ControllerLink extends Controller
 
     public function actionAddLink()
     {
-        $link = $_POST["userlink"];
-        $header = $_POST["linkheader"];
-        $description = $_POST["linkdescription"];
-        $privateFlag = $_POST["linkflag"];
-        $parameters = array("link" => $link, "header" => $header, "description" => $description, "linkflag" => $privateFlag);
-        $this->model->addLink($parameters);
+        if (isset($_SESSION['userID']) && $_SESSION['userID'] == true)
+        {
+            $link = $_POST["userlink"];
+            $header = $_POST["linkheader"];
+            $description = $_POST["linkdescription"];
+            $privateFlag = $_POST["linkflag"];
+            $parameters = array("link" => $link, "header" => $header, "description" => $description, "linkflag" => $privateFlag);
+            $this->model->addLink($parameters);
+        }
+        else
+        {
+            echo "You need to sign in first!";
+        }
+        $this->view = new ViewIndex("AddLink");
+        $this->view->render();
     }
 
     public function actionAddLinkPage()
     {
         $this->view = new ViewIndex("AddLink");
         $this->view->render();
-        //$this->view->generate('viewAddLink.php', 'viewTemplate.php');
     }
 
     public function actionPublicLinks()
     {
         $data = $this->model->getAllPublicLinks();
-        //$data[] = "PublicLinks";
-        $this->view = new ViewIndex("PublicLinks", $data);
-        //$this->view->setParameters($data);
-        $this->view->render();
-        //$this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
+        if ($data != null)
+        {
+            $this->view = new ViewIndex("PublicLinks", $data);
+            //$this->view->setParameters($data);
+            $this->view->render();
+            //$this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
+        }
     }
 
-    public function actionViewLink()
+    public function actionViewUserLinks()
+    {
+        $data = $this->model->getUserLinks();
+        if ($data != null)
+        {
+            $this->view = new ViewIndex("", $data);
+            $this->view->render();
+        }
+    }
+
+    public function actionViewAllLinks()
+    {
+
+    }
+
+    public function actionViewPublicLink()
     {
         if(isset($_GET['linkid']))
         {
 
             $linkID = $_GET['linkid'];
             $data = $this->model->getPublicLinkDescription($linkID);
-            //$data[] = $linkID;
-            $this->view = new ViewIndex("LinkInfo", $data);
-            //$this->view->setParameters($data);
-            $this->view->render();
-            //$this->view->generate('viewLinkInfo.php', 'viewTemplate.php', $data);
+            if ($data != null)
+            {
+                //$data[] = $linkID;
+                $this->view = new ViewIndex("LinkInfo", $data);
+                //$this->view->setParameters($data);
+                $this->view->render();
+                //$this->view->generate('viewLinkInfo.php', 'viewTemplate.php', $data);
+            }
         }
         else
         {
@@ -60,11 +88,11 @@ class ControllerLink extends Controller
             $linkID = $_GET['linkid'];
             $userID = 19;
             $data = $this->model->getPublicLinkDescription($linkID);
-            //$this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
-
-            $this->view = new ViewIndex("EditLink", $data);
-            //$this->view->setParameters($data);
-            $this->view->render();
+            if ($data != null)
+            {
+                $this->view = new ViewIndex("EditLink", $data);
+                $this->view->render();
+            }
         }
     }
 
@@ -72,10 +100,9 @@ class ControllerLink extends Controller
     {
         if(isset($_GET['linkid']))
         {
-
-            $linkID = 5;
-            $userID = 19;
-            $this->model->deleteLink($userID, $linkID);
+            //$linkID = 5;
+            //$userID = 19;
+            //$this->model->deleteLink($userID, $linkID);
         }
     }
 
@@ -91,12 +118,13 @@ class ControllerLink extends Controller
             $linkID = $_GET['linkid'];
             $userID = 19;
             $this->model->updateLink($params, $userID, $linkID);
-            //$linkID = 5;
             $data = $this->model->getLinkDescription($userID, $linkID);
-            //$this->view->generate('viewEditLink.php', 'viewTemplate.php', $data);
-            $this->view = new ViewIndex("LinkInfo", $data);
-            //$this->view->setParameters($data);
-            $this->view->render();
+            if ($data != null)
+            {
+                $this->view = new ViewIndex("LinkInfo", $data);
+                $this->view->render();
+            }
+
         }
     }
 }

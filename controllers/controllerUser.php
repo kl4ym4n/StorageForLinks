@@ -47,6 +47,14 @@ class ControllerUser extends Controller
         //$this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
 
+    public function actionLogout()
+    {
+        $this->model->userLogout();
+        $this->view = new ViewIndex("Login");
+        $this->view->render();
+
+    }
+
     public function actionAllUsers()
     {
         $data = $this->model->getAllUserList();
@@ -80,6 +88,5 @@ class ControllerUser extends Controller
         $data = $this->model->getUserProfile($userID);
         $this->view = new ViewIndex("EditProfile", $data);
         $this->view->render();
-        //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 }
