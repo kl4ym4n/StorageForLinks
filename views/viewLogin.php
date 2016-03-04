@@ -5,7 +5,7 @@ class ViewLogin extends View
     {
         $this->template = '<div class="container">
         <legend>Login page</legend>
-          <form class="form-signin" role="form" action = "Login" method = "post">
+          <form class="form-signin" role="form" action = "/User/Login" method = "post">
             <h2 class="form-signin-heading">Please sign in</h2>
                 <div class="form-group">
                 <input type="text" class="form-control" name = "userlogin" placeholder="Login" required autofocus>
