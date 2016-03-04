@@ -23,11 +23,18 @@ class Link extends GeneralModel
 
     public function fillFields($parameters)
     {
-        $this->userID = $_SESSION['userID'];
-        $this->link = $parameters['link'];
-        $this->header = $parameters['header'];
-        $this->description = $parameters['description'];
-        $this->privateFlag = $parameters['linkflag'];
+        if (isset($_SESSION['userID']))
+        {
+            $this->userID = $_SESSION['userID'];
+            $this->link = $parameters['link'];
+            $this->header = $parameters['header'];
+            $this->description = $parameters['description'];
+            $this->privateFlag = $parameters['linkflag'];
+        }
+        else
+        {
+            echo "You need to sign in first!";
+        }
     }
 
     public function addLink($parameters)
@@ -84,7 +91,7 @@ class Link extends GeneralModel
         return $params;
     }
 
-    public function showUserLinks()
+    public function getUserLinks()
     {
         global $connection;
         $recLimit = 2;
@@ -93,7 +100,7 @@ class Link extends GeneralModel
         $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
-        $pageCount = round ($rowCount / $recLimit);
+        $pageCount = ceil ($rowCount / $recLimit);
         if (isset($_GET{'page'} ))
         {
             $page = $_GET{'page'};
@@ -119,9 +126,7 @@ class Link extends GeneralModel
                 $row = array("link" => $result['link'], "header" => $result['header'],
                     "description" => $result['description'], "flag" => $result['private_flag'], "date" => $result['add_date']);
                 $data[] = $row;
-                //$i++;
                 $linkID[] = $result['primary_key'];
-
             }
         }
         $params = array($linkID, $data, $page, $pageCount, $recLimit);
@@ -134,6 +139,7 @@ class Link extends GeneralModel
         //$userID = $_SESSION['userID'];
         //$userID = 19;
         //echo $userID;
+        $params = array();
         $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
         $query->execute();
         $rowCount = $query->rowCount();
@@ -144,13 +150,15 @@ class Link extends GeneralModel
         else
         {
             $row = $query->fetchAll();
-            return array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
+            $params = array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
         }
+        return $params;
     }
 
     public function getPublicLinkDescription($linkID)
     {
         global $connection;
+        $params = array();
         $query = $connection->prepare("SELECT * FROM Links WHERE primary_key = '$linkID'");
         $query->execute();
         $rowCount = $query->rowCount();
@@ -161,8 +169,9 @@ class Link extends GeneralModel
         else
         {
             $row = $query->fetchAll();
-            return array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
+            $params = array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
         }
+        return $params;
     }
 
     public function updateLink($parameters, $userID, $linkID)
@@ -181,7 +190,6 @@ class Link extends GeneralModel
             $link = $parameters["link"];
             $description = $parameters["description"];
             $flag = $parameters["flag"];
-            //echo $flag;
             $query = $connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
             $query->execute();
         }

@@ -2,7 +2,7 @@
 include_once "modelActivation.php";
 session_start();
 //set variable in appropriate place
-$_SESSION['is_auth'] = false;
+//$_SESSION['is_auth'] = false;
 class User extends GeneralModel
 {
     private $login, $email, $password, $name, $surname, $role, $status;
@@ -113,7 +113,7 @@ class User extends GeneralModel
                 $hash = password_hash($parameters["password"], PASSWORD_DEFAULT);
                 $this->setPassword($hash);
                 $this->setStatus(0);
-                $this->setRole(0);
+                $this->setRole(2);
                 $this->checkExistLogin();
             }
         }
@@ -125,6 +125,14 @@ class User extends GeneralModel
         $actual_link = "http://$_SERVER[HTTP_HOST]/activation/activate/?hash=$hash";
         $content = "Click this link to activate your account. ". $actual_link;
         $letter = mail($email, $subject, $content);
+    }
+
+    public function userLogout()
+    {
+        if (isset($_SESSION['userID']))
+        {
+            $_SESSION['userID'] = null;
+        }
     }
 
     public function checkUserLogin(Array $parameters)
@@ -143,28 +151,24 @@ class User extends GeneralModel
                 if ($row[0]["status"] == 0)
                 {
                     echo "You need to activate your account first!";
-                    $_SESSION['is_auth'] = false;
+                    $_SESSION['userID'] = null;
                 }
                 else
                 {
                     echo "Success login!</br>";
-                    //session_start();
-                    $_SESSION['is_auth'] = true;
-                    $_SESSION['userlogin'] = $row[0]["login"];
                     $_SESSION['userID'] = $row[0]["primary_key"];
-                    echo "Hello, ".$_SESSION['userlogin']. "!";
                 }
             }
             else
             {
                 echo "Incorrect password!";
-                $_SESSION['is_auth'] = false;
+                $_SESSION['userID'] = null;
             }
         }
         else
         {
             echo "Incorrect login!";
-            $_SESSION['is_auth'] = false;
+            $_SESSION['userID'] = null;
         }
     }
 
@@ -188,6 +192,7 @@ class User extends GeneralModel
             $query->execute();
             $row = $query->fetchAll();
             //$userPrimaryKey = $connection->lastInsertId();
+            $this->setUserRole($row[0]["primary_key"], $this->getRole());
             $parameters = array("uid" => $row[0]["primary_key"], "hash" => $hash, "expireTime" => $expireTime);
             $activation = new Activation();
             $activation->fillFields($parameters);
@@ -206,7 +211,7 @@ class User extends GeneralModel
         $queryCount = $connection->prepare("SELECT primary_key FROM Users");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
-        $pageCount = round ($rowCount / $recLimit);
+        $pageCount = ceil ($rowCount / $recLimit);
         if (isset($_GET{'page'} ))
         {
             $page = $_GET{'page'};
@@ -227,6 +232,7 @@ class User extends GeneralModel
         else
         {
             //$row = $query->fetchAll();
+            //echo $pageCount;
             foreach ($query as $result)
             {
                 $row = array("name" => $result["name"], "surname" => $result["surname"], "login" => $result["login"],
@@ -244,6 +250,7 @@ class User extends GeneralModel
         global $connection;
         //$userID = $_SESSION['userID'];
         //echo $userID;
+        $params = array();
         $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
         $query->execute();
         $rowCount = $query->rowCount();
@@ -257,10 +264,11 @@ class User extends GeneralModel
         {
             $row = $query->fetchAll();
             $role = $this->getUserRole($userID);
+            $params = array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
+                "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
 
         }
-        return array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
-            "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
+        return $params;
     }
 
     public function getUserRole($userID)
@@ -288,16 +296,26 @@ class User extends GeneralModel
             else
             {
                 $row = $roleQuery->fetchAll();
-
             }
         }
         return $row[0]["role"];
     }
 
+    public function setUserRole($userID, $roleID)
+    {
+        global $connection;
+        $query = $connection->prepare("INSERT INTO UserRoles (user_id, role_id) VALUES ('$userID', '$roleID')");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount == 0)
+        {
+            echo "No such user in db";
+        }
+    }
+
     public function updateUserProfile($parameters, $userID)
     {
         global $connection;
-        //echo $userID;
         if ($parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL)
         {
             echo "Please, fill empty fields!";
