@@ -7,7 +7,8 @@ class Link extends GeneralModel
     public function addLinkToDB()
     {
         global $connection;
-        $query = $connection->prepare("SELECT user_id, link FROM  Links WHERE link = '$this->link' AND user_id = '$this->userID'");
+        $userID = $_SESSION['userID'];
+        $query = $connection->prepare("SELECT user_id, link FROM  Links WHERE link = '$this->link' AND user_id = '$userID'");
         $result = $query->rowCount();
         if ($result > 0)
         {
@@ -59,7 +60,7 @@ class Link extends GeneralModel
         $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
-        $pageCount = round ($rowCount / $recLimit);
+        $pageCount = ceil ($rowCount / $recLimit);
         if (isset($_GET{'page'} ))
         {
             $page = $_GET{'page'};
@@ -91,13 +92,13 @@ class Link extends GeneralModel
         return $params;
     }
 
-    public function getUserLinks()
+    public function getAllLinks()
     {
         global $connection;
         $recLimit = 2;
         $data = array();
         $linkID = array();
-        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
+        $queryCount = $connection->prepare("SELECT primary_key FROM Links");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
@@ -111,10 +112,51 @@ class Link extends GeneralModel
             $page = 0;
             $offset = 0;
         }
-        $query = $connection->prepare("SELECT link, header, private_flag FROM Links WHERE user_id = '$this->userID' LIMIT $offset, $recLimit");
+        $query = $connection->prepare("SELECT primary_key, header, link, private_flag FROM Links LIMIT $offset, $recLimit");
         $query->execute();
-        //$rowCount = $query->rowCount();
         if ($rowCount == 0)
+        {
+            echo "No links in database";
+        }
+        else
+        {
+            foreach ($query as $result)
+            {
+                $row = array("header" => $result['header'], "link" => $result['link']);
+                $data[] = $row;
+                $linkID[] = $result['primary_key'];
+            }
+        }
+        $params = array($linkID, $data, $page, $pageCount, $recLimit);
+        return $params;
+    }
+
+    public function getUserLinks()
+    {
+        global $connection;
+        $recLimit = 2;
+        $data = array();
+        $linkID = array();
+        $userID = $_SESSION['userID'];
+        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE user_id = '$userID'");
+        $queryCount->execute();
+        $rowCount = $queryCount->rowCount();
+        $pageCount = ceil ($rowCount / $recLimit);
+        if (isset($_GET{'page'} ))
+        {
+            $page = $_GET{'page'};
+            $offset = $recLimit * $page ;
+        }
+        else
+        {
+            $page = 0;
+            $offset = 0;
+        }
+        $query = $connection->prepare("SELECT primary_key, link, header, private_flag, description, private_flag, add_date FROM Links WHERE user_id = '$userID' LIMIT $offset, $recLimit");
+        $query->execute();
+        $finalRowCount = $query->rowCount();
+        //echo $userID;
+        if ($finalRowCount == 0)
         {
             echo "No user links in database";
         }
@@ -136,9 +178,6 @@ class Link extends GeneralModel
     public function getLinkDescription($userID, $linkID)
     {
         global $connection;
-        //$userID = $_SESSION['userID'];
-        //$userID = 19;
-        //echo $userID;
         $params = array();
         $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
         $query->execute();
@@ -177,9 +216,6 @@ class Link extends GeneralModel
     public function updateLink($parameters, $userID, $linkID)
     {
         global $connection;
-        //$userID = $_SESSION['userID'];
-        //$userID = 19;
-        //$linkID = 5;
         if ($parameters["link"] == NULL || $parameters["description"] == NULL || $parameters["header"] == NULL)
         {
             echo "Please, fill empty fields!";
@@ -198,8 +234,6 @@ class Link extends GeneralModel
     public function deleteLink($userID, $linkID)
     {
         global $connection;
-        //$userID = 19;
-        //$linkID = 5;
         $query = $connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
         $query->execute();
     }

@@ -248,14 +248,10 @@ class User extends GeneralModel
     public function getUserProfile($userID)
     {
         global $connection;
-        //$userID = $_SESSION['userID'];
-        //echo $userID;
         $params = array();
         $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
         $query->execute();
         $rowCount = $query->rowCount();
-        $row = 0;
-        $role = 0;
         if($rowCount == 0)
         {
             echo "No such user in db";
@@ -374,26 +370,3 @@ class User extends GeneralModel
 
 
 }
-
-//$usr = new User();
-//$usr->showAllUserList();
-//$usr->deleteLink();
-//$curTime = $usr->getCurrentDateTime();
-//$offset = "2 days";
-//$nextTime = date('Y-m-d h:i:s', strtotime($curTime. ' + '.$offset));
-//echo "$curTime </br>";
-//echo $nextTime;
-
-//$usr->setLogin("kl4ym4n");
-//$usr->sendEmail("kl4ym4n@gmail.com", "Registration");
-//$usr->setLogin("ololosh");
-//$usr->setPassword("1234");
-//$usr->setName("Vasya");
-//$usr->setSurname("Kozlodoev");
-//$usr->setEmail("nagibator@mail.ru");
-//$usr->addUserToDB();
-//$usr->getLogin();
-
-//$usr2 = new User();
-//$usr2->setLogin("ololosh");
-//$usr2->checkExistLogin();
