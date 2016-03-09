@@ -67,6 +67,14 @@ class ControllerUser extends Controller
 
     public function actionViewProfile()
     {
+        $userID = $_SESSION['userID'];
+        $data = $this->model->getUserProfile($userID);
+        $this->view = new ViewIndex("UserProfile", $data);
+        $this->view->render();
+    }
+
+    public function actionEditProfile()
+    {
         $userID = $_GET['userid'];
         $data = $this->model->getUserProfile($userID);
         $this->view = new ViewIndex("EditProfile", $data);

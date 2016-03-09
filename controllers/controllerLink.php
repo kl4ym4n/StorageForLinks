@@ -38,25 +38,49 @@ class ControllerLink extends Controller
         if ($data != null)
         {
             $this->view = new ViewIndex("PublicLinks", $data);
-            //$this->view->setParameters($data);
             $this->view->render();
             //$this->view->generate('viewPublicLinks.php', 'viewTemplate.php');
         }
     }
 
-    public function actionViewUserLinks()
+    public function actionUserLinks()
     {
         $data = $this->model->getUserLinks();
         if ($data != null)
         {
-            $this->view = new ViewIndex("", $data);
+            $this->view = new ViewIndex("UserLinks", $data);
             $this->view->render();
         }
     }
 
-    public function actionViewAllLinks()
+    public function actionAllLinks()
     {
+        $data = $this->model->getAllLinks();
+        if ($data != null)
+        {
+            $this->view = new ViewIndex("AllLinks", $data);
+            $this->view->render();
+        }
+    }
 
+    public function actionViewUserLink()
+    {
+        if(isset($_GET['linkid']) && isset($_SESSION['userID']))
+        {
+
+            $linkID = $_GET['linkid'];
+            $userID = $_SESSION['userID'];
+            $data = $this->model->getLinkDescription($userID, $linkID);
+            if ($data != null)
+            {
+                $this->view = new ViewIndex("LinkInfo", $data);
+                $this->view->render();
+            }
+        }
+        else
+        {
+            echo "Invalid link!";
+        }
     }
 
     public function actionViewPublicLink()
@@ -68,11 +92,8 @@ class ControllerLink extends Controller
             $data = $this->model->getPublicLinkDescription($linkID);
             if ($data != null)
             {
-                //$data[] = $linkID;
                 $this->view = new ViewIndex("LinkInfo", $data);
-                //$this->view->setParameters($data);
                 $this->view->render();
-                //$this->view->generate('viewLinkInfo.php', 'viewTemplate.php', $data);
             }
         }
         else
@@ -86,7 +107,6 @@ class ControllerLink extends Controller
         if(isset($_GET['linkid'])) {
 
             $linkID = $_GET['linkid'];
-            $userID = 19;
             $data = $this->model->getPublicLinkDescription($linkID);
             if ($data != null)
             {
