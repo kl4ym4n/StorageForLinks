@@ -3,42 +3,43 @@ class ViewLinkInfo extends View
 {
     public function __construct($data)
     {
-        //echo $data["id"];
+        $checkedFlag = '';
+        if ($data["flag"] == '0')
+        {
+            $checkedFlag = 'Public';
+        }
+        else
+        {
+            $checkedFlag = 'Private';
+        }
+        //echo $data["flag"];
         $this->template = '<div class="container">
-                            <form class= "form-horizontal" method = post action="ViewLink">
 
                             <fieldset>
 
                             <legend>View link info</legend>
 
                             <div class="control-group">
-                                <label class="control-label">Link title</label>
-                                    <div class="controls">
-                                    <input type="text" name = "linkheader" value ="'. $data["header"] .'" required disabled>
-                                    </div>
+                                <label class="control-label">Link title:</label>
+                                    <span class="inline">'.$data['header'].'</span>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label">Link</label>
-                                    <div class="controls">
-                                    <input type="text" name = "userlink" value ="'. $data["link"] .'" required disabled>
-                                    </div>
+                                <label class="control-label">Link:</label>
+                                    <span class="inline">'.$data['link'].'</span>
                             </div>
 
                             <div class="control-group">
-                                <label class="control-label">Description</label>
-                                    <div class="controls">
-                                    <textarea class="form-control" rows="5" name="linkdescription" disabled>' .$data["description"]. '</textarea>
-                                    </div>
+                                <label class="control-label">Description:</label>
+                                    <span class="inline">'.$data['description'].'</span>
                             </div>
 
-                            <div class="checkbox">
-                                <input type="hidden" name="linkflag" value="0" />
-                                <label><input type="checkbox" name = "linkflag" value = "'. $data["flag"] .'" disabled>Set private</label>
+                            <div class="control-group">
+                                <label class="control-label">Link status:</label>
+                                    <span class="inline">'.$checkedFlag.'</span>
                             </div>
 
                             </fieldset>
-                            </form>
 
                             <div class="control-group">
                             <label class="control-label"></label>
