@@ -1,7 +1,5 @@
 <?php
 
-
-
 $user = 'root';
 $pass = 'azarta';
 
