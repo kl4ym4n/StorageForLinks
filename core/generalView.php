@@ -26,4 +26,30 @@ class View
     {
         include 'views/'.$template_view;
     }
+
+    function echoActiveClass($requestUri)
+    {
+        $routes = explode('/', $_SERVER['REQUEST_URI']);
+        $current_file_name = '';
+        if (isset($routes[2]))
+        {
+            $current_file_name = $routes[2];
+        }
+        else
+        {
+            if ($requestUri == '/index')
+            {
+                $current_file_name = $requestUri;
+            }
+        }
+        if ($current_file_name == $requestUri)
+        {
+            return 'class="active"';
+        }
+
+        else
+        {
+            return '';
+        }
+    }
 }
