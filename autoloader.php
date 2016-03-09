@@ -5,7 +5,9 @@ function autoload($className)
     $arrayPaths = array(
         '/views/',
         '/models/',
-        '/controllers/'
+        '/controllers/',
+        '/public/'
+
     );
 
     # Count the total item in the array.
