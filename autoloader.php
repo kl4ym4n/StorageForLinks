@@ -26,8 +26,6 @@ function autoload($className)
             return;
             //var_dump($file);
         }
-
     }
 }
-
 spl_autoload_register('autoload');
