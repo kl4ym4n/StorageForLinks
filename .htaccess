@@ -2,7 +2,15 @@ RewriteEngine On
 #<IfModule mod_rewrite.c>
 #RewriteEngine On
 #</IfModule>
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+<FilesMatch "index\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* index.php [L]
+RewriteRule .* ../public/index.php [L]
 
