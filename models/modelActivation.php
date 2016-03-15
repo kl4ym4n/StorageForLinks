@@ -47,23 +47,23 @@ class Activation extends GeneralModel
 
     public function addActivationPropertiesToDB()
     {
-        global $connection;
-        $query = $connection->prepare("INSERT INTO ActivationLinks (uid, link_hash, expire_time) VALUES ('$this->userID', '$this->linkHash', '$this->expireTime')");
+        //global $connection;
+        $query = $this->connection->prepare("INSERT INTO ActivationLinks (uid, link_hash, expire_time) VALUES ('$this->userID', '$this->linkHash', '$this->expireTime')");
         $query->execute();
     }
 
     public function activateUser($parameters)
     {
-        global $connection;
+        //global $connection;
         $userhash = $parameters["hash"];
-        $query = $connection->prepare("SELECT uid, expire_time FROM ActivationLinks WHERE link_hash = '$userhash'");
+        $query = $this->connection->prepare("SELECT uid, expire_time FROM ActivationLinks WHERE link_hash = '$userhash'");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount > 0)
         {
             $row = $query->fetchAll();
             $resultID = $row[0]["uid"];
-            $query = $connection->prepare("UPDATE Users SET status = '1' WHERE primary_key = '$resultID' AND status = '0'");
+            $query = $this->connection->prepare("UPDATE Users SET status = '1' WHERE primary_key = '$resultID' AND status = '0'");
             $query->execute();
             $updateRowCount = $query->rowCount();
             if ($updateRowCount > 0)

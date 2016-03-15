@@ -1,14 +1,14 @@
 <?php
-session_start();
+//session_start();
 class Link extends GeneralModel
 {
     private $userID, $link, $header, $description, $creationDate, $privateFlag;
 
     public function addLinkToDB()
     {
-        global $connection;
+        //global $connection;
         $userID = $_SESSION['userID'];
-        $query = $connection->prepare("SELECT user_id, link FROM  Links WHERE link = '$this->link' AND user_id = '$userID'");
+        $query = $this->connection->prepare("SELECT user_id, link FROM  Links WHERE link = '$this->link' AND user_id = '$userID'");
         $result = $query->rowCount();
         if ($result > 0)
         {
@@ -17,7 +17,7 @@ class Link extends GeneralModel
         else
         {
             $this->creationDate = $this->getCurrentDateTime();
-            $query = $connection->prepare("INSERT INTO Links (user_id, link, header, description, add_date, private_flag) VALUES ('$this->userID', '$this->link', '$this->header', '$this->description', '$this->creationDate', '$this->privateFlag')");
+            $query = $this->connection->prepare("INSERT INTO Links (user_id, link, header, description, add_date, private_flag) VALUES ('$this->userID', '$this->link', '$this->header', '$this->description', '$this->creationDate', '$this->privateFlag')");
             $query->execute();
         }
     }
@@ -53,11 +53,11 @@ class Link extends GeneralModel
 
     public function getAllPublicLinks()
     {
-        global $connection;
+        //global $connection;
         $recLimit = 2;
         $data = array();
         $linkID = array();
-        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
+        $queryCount = $this->connection->prepare("SELECT primary_key FROM Links WHERE private_flag = '0'");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
@@ -71,7 +71,7 @@ class Link extends GeneralModel
             $page = 0;
             $offset = 0;
         }
-        $query = $connection->prepare("SELECT primary_key, header, link, private_flag FROM Links  WHERE private_flag = '0' LIMIT $offset, $recLimit");
+        $query = $this->connection->prepare("SELECT primary_key, header, link, private_flag FROM Links  WHERE private_flag = '0' LIMIT $offset, $recLimit");
         $query->execute();
         if ($rowCount == 0)
         {
@@ -94,11 +94,11 @@ class Link extends GeneralModel
 
     public function getAllLinks()
     {
-        global $connection;
+        //global $connection;
         $recLimit = 2;
         $data = array();
         $linkID = array();
-        $queryCount = $connection->prepare("SELECT primary_key FROM Links");
+        $queryCount = $this->connection->prepare("SELECT primary_key FROM Links");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
@@ -112,7 +112,7 @@ class Link extends GeneralModel
             $page = 0;
             $offset = 0;
         }
-        $query = $connection->prepare("SELECT primary_key, header, link, private_flag FROM Links LIMIT $offset, $recLimit");
+        $query = $this->connection->prepare("SELECT primary_key, header, link, private_flag FROM Links LIMIT $offset, $recLimit");
         $query->execute();
         if ($rowCount == 0)
         {
@@ -133,12 +133,20 @@ class Link extends GeneralModel
 
     public function getUserLinks()
     {
-        global $connection;
+        //global $connection;
         $recLimit = 2;
         $data = array();
         $linkID = array();
-        $userID = $_SESSION['userID'];
-        $queryCount = $connection->prepare("SELECT primary_key FROM Links WHERE user_id = '$userID'");
+        $params = array();
+        if (isset($_SESSION['userID']))
+        {
+            $userID = $_SESSION['userID'];
+        }
+        else
+        {
+            $userID = -1;
+        }
+        $queryCount = $this->connection->prepare("SELECT primary_key FROM Links WHERE user_id = '$userID'");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
@@ -152,7 +160,7 @@ class Link extends GeneralModel
             $page = 0;
             $offset = 0;
         }
-        $query = $connection->prepare("SELECT primary_key, link, header, private_flag, description, private_flag, add_date FROM Links WHERE user_id = '$userID' LIMIT $offset, $recLimit");
+        $query = $this->connection->prepare("SELECT primary_key, link, header, private_flag, description, private_flag, add_date FROM Links WHERE user_id = '$userID' LIMIT $offset, $recLimit");
         $query->execute();
         $finalRowCount = $query->rowCount();
         //echo $userID;
@@ -170,16 +178,17 @@ class Link extends GeneralModel
                 $data[] = $row;
                 $linkID[] = $result['primary_key'];
             }
+            $params = array($linkID, $data, $page, $pageCount, $recLimit);
         }
-        $params = array($linkID, $data, $page, $pageCount, $recLimit);
+
         return $params;
     }
 
     public function getLinkDescription($userID, $linkID)
     {
-        global $connection;
+        //global $connection;
         $params = array();
-        $query = $connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
+        $query = $this->connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount == 0)
@@ -196,9 +205,9 @@ class Link extends GeneralModel
 
     public function getPublicLinkDescription($linkID)
     {
-        global $connection;
+        //global $connection;
         $params = array();
-        $query = $connection->prepare("SELECT * FROM Links WHERE primary_key = '$linkID'");
+        $query = $this->connection->prepare("SELECT * FROM Links WHERE primary_key = '$linkID'");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount == 0)
@@ -215,7 +224,7 @@ class Link extends GeneralModel
 
     public function updateLink($parameters, $userID, $linkID)
     {
-        global $connection;
+        //global $connection;
         if ($parameters["link"] == NULL || $parameters["description"] == NULL || $parameters["header"] == NULL)
         {
             echo "Please, fill empty fields!";
@@ -226,15 +235,15 @@ class Link extends GeneralModel
             $link = $parameters["link"];
             $description = $parameters["description"];
             $flag = $parameters["flag"];
-            $query = $connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
+            $query = $this->connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
             $query->execute();
         }
     }
 
     public function deleteLink($userID, $linkID)
     {
-        global $connection;
-        $query = $connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
+        //global $connection;
+        $query = $this->connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
         $query->execute();
     }
 

@@ -1,8 +1,5 @@
 <?php
 include_once "modelActivation.php";
-session_start();
-//set variable in appropriate place
-//$_SESSION['is_auth'] = false;
 class User extends GeneralModel
 {
     private $login, $email, $password, $name, $surname, $role, $status;
@@ -86,8 +83,8 @@ class User extends GeneralModel
 
     public function addUserToDB()
     {
-        global $connection;
-        $query = $connection->prepare("INSERT INTO Users (login, password, name, surname, email, status) VALUES ('$this->login', '$this->password', '$this->name', '$this->surname', '$this->email', '$this->status')");
+        //global $connection;
+        $query = $this->connection->prepare("INSERT INTO Users (login, password, name, surname, email, status) VALUES ('$this->login', '$this->password', '$this->name', '$this->surname', '$this->email', '$this->status')");
         $query->execute();
     }
 
@@ -119,6 +116,36 @@ class User extends GeneralModel
         }
     }
 
+    public function checkExistLogin()
+    {
+        //global $connection;
+        $query = $this->connection->prepare("SELECT primary_key, login FROM Users WHERE login ='$this->login'");
+        $query->execute();
+        $rowCount = $query->rowCount();
+        if($rowCount > 0)
+        {
+            echo "User already exist!";
+        }
+        else
+        {
+            echo "You're successfully registered! Check your email for confirmation link.";
+            $this->addUserToDB();
+            $hash = md5(rand(0,1000));
+            $offset = "30 minutes";
+            $expireTime = $this->getExpireTime($offset);
+            $query->execute();
+            $row = $query->fetchAll();
+            //$userPrimaryKey = $connection->lastInsertId();
+            $this->setUserRole($row[0]["primary_key"], $this->getRole());
+            $parameters = array("uid" => $row[0]["primary_key"], "hash" => $hash, "expireTime" => $expireTime);
+            $activation = new Activation();
+            $activation->fillFields($parameters);
+            $activation->addActivationPropertiesToDB();
+            $this->sendEmail($this->email, $hash, "Confirm registration");
+
+        }
+    }
+
     public function sendEmail($email, $hash, $subject)
     {
         //$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"."Page";
@@ -132,15 +159,16 @@ class User extends GeneralModel
         if (isset($_SESSION['userID']))
         {
             $_SESSION['userID'] = null;
+            session_destroy();
         }
     }
 
     public function checkUserLogin(Array $parameters)
     {
-        global $connection;
+        //global $connection;
         $userlogin = $parameters["userlogin"];
         $userpassword = $parameters["userpassword"];
-        $query = $connection->prepare("SELECT primary_key, login, password, status FROM Users WHERE login = '$userlogin'");
+        $query = $this->connection->prepare("SELECT primary_key, login, password, status FROM Users WHERE login = '$userlogin'");
         $query->execute();
         $row = $query->fetchAll();
         $rowCount = $query->rowCount();
@@ -172,43 +200,15 @@ class User extends GeneralModel
         }
     }
 
-    public function checkExistLogin()
-    {
-        global $connection;
-        $query = $connection->prepare("SELECT primary_key, login FROM Users WHERE login ='$this->login'");
-        $query->execute();
-        $rowCount = $query->rowCount();
-        if($rowCount > 0)
-        {
-            echo "User already exist!";
-        }
-        else
-        {
-            echo "You're successfully registered! Check your email for confirmation link.";
-            $this->addUserToDB();
-            $hash = md5(rand(0,1000));
-            $offset = "30 minutes";
-            $expireTime = $this->getExpireTime($offset);
-            $query->execute();
-            $row = $query->fetchAll();
-            //$userPrimaryKey = $connection->lastInsertId();
-            $this->setUserRole($row[0]["primary_key"], $this->getRole());
-            $parameters = array("uid" => $row[0]["primary_key"], "hash" => $hash, "expireTime" => $expireTime);
-            $activation = new Activation();
-            $activation->fillFields($parameters);
-            $activation->addActivationPropertiesToDB();
-            $this->sendEmail($this->email, $hash, "Confirm registration");
-
-        }
-    }
-
     public function getAllUserList()
     {
-        global $connection;
+        //$connection = $this->getConnection();
+        //$connection = $this->connection;
+        //var_dump($this->getConnection());
         $recLimit = 3;
         $data = array();
         $userID = array();
-        $queryCount = $connection->prepare("SELECT primary_key FROM Users");
+        $queryCount = $this->connection->prepare("SELECT primary_key FROM Users");
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
@@ -223,7 +223,7 @@ class User extends GeneralModel
             $offset = 0;
         }
 
-        $query = $connection->prepare("SELECT * FROM Users LIMIT $offset, $recLimit");
+        $query = $this->connection->prepare("SELECT * FROM Users LIMIT $offset, $recLimit");
         $query->execute();
         if($rowCount == 0)
         {
@@ -247,9 +247,9 @@ class User extends GeneralModel
 
     public function getUserProfile($userID)
     {
-        global $connection;
+        //global $connection;
         $params = array();
-        $query = $connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
+        $query = $this->connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount == 0)
@@ -262,15 +262,14 @@ class User extends GeneralModel
             $role = $this->getUserRole($userID);
             $params = array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
                 "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
-
         }
         return $params;
     }
 
     public function getUserRole($userID)
     {
-        global $connection;
-        $query = $connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
+        //global $connection;
+        $query = $this->connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
         $query->execute();
         $row = 0;
         $rowCount = $query->rowCount();
@@ -282,7 +281,7 @@ class User extends GeneralModel
         {
             $row = $query->fetchAll();
             $roleID = $row[0]["role_id"];
-            $roleQuery = $connection->prepare("SELECT role FROM Roles WHERE primary_key = '$roleID'");
+            $roleQuery = $this->connection->prepare("SELECT role FROM Roles WHERE primary_key = '$roleID'");
             $roleQuery->execute();
             $roleRowCount = $roleQuery->rowCount();
             if($roleRowCount == 0)
@@ -299,8 +298,8 @@ class User extends GeneralModel
 
     public function setUserRole($userID, $roleID)
     {
-        global $connection;
-        $query = $connection->prepare("INSERT INTO UserRoles (user_id, role_id) VALUES ('$userID', '$roleID')");
+        //global $connection;
+        $query = $this->connection->prepare("INSERT INTO UserRoles (user_id, role_id) VALUES ('$userID', '$roleID')");
         $query->execute();
         $rowCount = $query->rowCount();
         if($rowCount == 0)
@@ -311,7 +310,7 @@ class User extends GeneralModel
 
     public function updateUserProfile($parameters, $userID)
     {
-        global $connection;
+        //global $connection;
         if ($parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL)
         {
             echo "Please, fill empty fields!";
@@ -326,18 +325,18 @@ class User extends GeneralModel
             if ($password != NULL)
             {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
-                $query = $connection->prepare("UPDATE Users SET password =  '$hash' WHERE primary_key = '$userID'");
+                $query = $this->connection->prepare("UPDATE Users SET password =  '$hash' WHERE primary_key = '$userID'");
                 $query->execute();
             }
-            $query = $connection->prepare("UPDATE Users SET email = '$mail', name = '$username', surname = '$surname', status = '$flag' WHERE primary_key = '$userID'");
+            $query = $this->connection->prepare("UPDATE Users SET email = '$mail', name = '$username', surname = '$surname', status = '$flag' WHERE primary_key = '$userID'");
             $query->execute();
         }
     }
 
     public function changeRole($userID, $roleID)
     {
-        global $connection;
-        $query = $connection->prepare("UPDATE UserRoles SET role_id = '$roleID' WHERE user_id = '$userID'");
+        //global $connection;
+        $query = $this->connection->prepare("UPDATE UserRoles SET role_id = '$roleID' WHERE user_id = '$userID'");
         $query->execute();
     }
 
