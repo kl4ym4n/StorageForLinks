@@ -40,7 +40,7 @@ class ViewHeader extends View
                                      if (isset($_SESSION['userID']))
                                      {
                                          $this->template .= '<div class="nav navbar-nav navbar-right">
-                                                            <a href="/User/Logout/" class="btn btn-default navbar-btn">Logout</a>
+                                                            <button id="logout" class="btn btn-default navbar-btn">Logout</button>
                                                             </div>';
                                      }
                                      else if (!isset($_SESSION['userID']))
