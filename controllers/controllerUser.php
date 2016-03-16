@@ -42,7 +42,7 @@ class ControllerUser extends Controller
         $userpassword = $_POST['userpassword'];
         $parameters = array("userlogin" => $userlogin, "userpassword" => $userpassword);
         $this->model->checkUserLogin($parameters);
-        $this->view = new ViewIndex("Login");
+        $this->view = new ViewIndex("Main");
         $this->view->render();
         //$this->view->generate('viewLogin.php', 'viewTemplate.php');
     }
@@ -50,8 +50,12 @@ class ControllerUser extends Controller
     public function actionLogout()
     {
         $this->model->userLogout();
-        $this->view = new ViewIndex("Login");
-        $this->view->render();
+//        session_start();
+//        session_unset();
+//        session_destroy();
+        //echo "logout in controller";
+        //$this->view = new ViewIndex("Login");
+        //$this->view->render();
 
     }
 
@@ -67,17 +71,32 @@ class ControllerUser extends Controller
 
     public function actionViewProfile()
     {
-        $userID = $_SESSION['userID'];
-        $data = $this->model->getUserProfile($userID);
-        $this->view = new ViewIndex("UserProfile", $data);
-        $this->view->render();
+        if (isset($_SESSION['userID']))
+        {
+            $userID = $_SESSION['userID'];
+            $data = $this->model->getUserProfile($userID);
+            if ($data != null)
+            {
+                $this->view = new ViewIndex("UserProfile", $data);
+                $this->view->render();
+            }
+        }
     }
-
+    //edit logged user profile
     public function actionEditProfile()
     {
         $userID = $_GET['userid'];
         $data = $this->model->getUserProfile($userID);
         $this->view = new ViewIndex("EditProfile", $data);
+        $this->view->render();
+        //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
+    }
+    //edit user profile from list
+    public function actionEditUserProfile()
+    {
+        $userID = $_GET['userid'];
+        $data = $this->model->getUserProfile($userID);
+        $this->view = new ViewIndex("EditUserProfile", $data);
         $this->view->render();
         //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
@@ -89,6 +108,7 @@ class ControllerUser extends Controller
         $username = $_POST['username'];
         $surname = $_POST['surname'];
         $flag = $_POST['statusflag'];
+        //$role = $_POST['role'];
         $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname, "flag" => $flag);
 
         $userID = $_GET['userid'];
