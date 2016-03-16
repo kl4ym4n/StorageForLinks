@@ -55,14 +55,6 @@ class ViewEditProfile extends View
                         </div>
                 </div>
 
-                <div class="control-group">
-                    <label class="control-label">Role</label>
-                        <div class="controls">
-                        <input type="text" name = "role" value ="'.$data['role'].'" required>
-                        </div>
-                </div>
-
-
                 <div class="checkbox">
                       <input type="hidden" name="statusflag" value="0" />
                       <label><input type="checkbox" name = "statusflag" value = "1" '.$checkedFlag.'>Set status active</label>
