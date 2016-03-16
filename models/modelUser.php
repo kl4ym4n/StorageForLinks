@@ -159,6 +159,7 @@ class User extends GeneralModel
         if (isset($_SESSION['userID']))
         {
             $_SESSION['userID'] = null;
+            session_unset();
             session_destroy();
         }
     }
@@ -249,21 +250,39 @@ class User extends GeneralModel
     {
         //global $connection;
         $params = array();
-        $query = $this->connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
-        $query->execute();
-        $rowCount = $query->rowCount();
-        if($rowCount == 0)
-        {
-            echo "No such user in db";
+        $roleList = array();
+        if (isset($_SESSION['userID'])) {
+
+            $query = $this->connection->prepare("SELECT * FROM Users WHERE primary_key = '$userID'");
+            $query->execute();
+            $rowCount = $query->rowCount();
+
+            $queryRole = $this->connection->prepare("SELECT * FROM Roles ");
+            $queryRole->execute();
+            $rowRoleCount = $queryRole->rowCount();
+            foreach ($queryRole as $result)
+            {
+                $row = array("role_id" => $result["primary_key"], "role" => $result["role"]);
+                $roleList[] = $row;
+            }
+            if($rowCount == 0)
+            {
+                echo "No such user in db";
+            }
+            else
+            {
+                $row = $query->fetchAll();
+                $role = $this->getUserRole($userID);
+                $params = array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
+                    "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role, "roleList" => $roleList);
+            }
+            return $params;
         }
         else
         {
-            $row = $query->fetchAll();
-            $role = $this->getUserRole($userID);
-            $params = array("id" => $row[0]["primary_key"],"name" => $row[0]["name"], "surname" => $row[0]["surname"], "login" => $row[0]["login"], "email" => $row[0]["email"],
-                "password" => $row[0]["password"], "status" => $row[0]["status"], "role" => $role);
+            echo 'You need to sign first';
+            return $params;
         }
-        return $params;
     }
 
     public function getUserRole($userID)
@@ -322,6 +341,7 @@ class User extends GeneralModel
             $surname = $parameters["surname"];
             $password = $parameters["password"];
             $flag = $parameters["flag"];
+            //$role = $parameters["role"];
             if ($password != NULL)
             {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
