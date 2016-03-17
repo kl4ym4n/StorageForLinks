@@ -56,12 +56,18 @@ class ViewEditUserProfile extends View
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Role</label>
-                        <div class="controls">
-                        <input type="text" name = "role" value ="'.$data['role'].'" required>
-                        </div>
-                </div>
+                <label class="control-label">Role</label>
+                    <div class="controls">
+                          <select class="form-control" id="selectRole">';
+                            foreach ($data['roleList'] as $row)
+                            {
+                                $this->template .= '<option>' . $row['role'] . '</option>';
+                            }
+        $this->template .= '
+                          </select>
 
+                    </div>
+                </div>
 
                 <div class="checkbox">
                       <input type="hidden" name="statusflag" value="0" />
@@ -79,3 +85,10 @@ class ViewEditUserProfile extends View
                 </form>';
     }
 }
+
+//<div class="control-group">
+//                    <label class="control-label">Role</label>
+//                        <div class="controls">
+//                        <input type="text" name = "role" value ="'.$data['role'][0].'" required>
+//                        </div>
+//                </div>
