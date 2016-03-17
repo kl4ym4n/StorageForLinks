@@ -290,7 +290,8 @@ class User extends GeneralModel
         //global $connection;
         $query = $this->connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
         $query->execute();
-        $row = 0;
+        $role = array();
+
         $rowCount = $query->rowCount();
         if($rowCount == 0)
         {
@@ -312,7 +313,9 @@ class User extends GeneralModel
                 $row = $roleQuery->fetchAll();
             }
         }
-        return $row[0]["role"];
+        $role[] = $row[0]["role"];
+        $role[] = $roleID;
+        return $role;
     }
 
     public function setUserRole($userID, $roleID)
