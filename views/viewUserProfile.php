@@ -40,7 +40,7 @@ class ViewUserProfile extends View
 
                 <div class="control-group">
                     <label class="control-label">Role:</label>
-                        <span class="inline">'.$data['role'].'</span>
+                        <span class="inline">'.$data['role'][0].'</span>
                 </div>
 
                 <div class="control-group">
