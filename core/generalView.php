@@ -52,4 +52,16 @@ class View
             return '';
         }
     }
+
+    function setSelectedItem($userRole, $roleID)
+    {
+        if ($userRole == $roleID)
+        {
+            return "selected";
+        }
+        else
+        {
+            return "";
+        }
+    }
 }
