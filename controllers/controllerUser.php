@@ -101,6 +101,15 @@ class ControllerUser extends Controller
         //$this->view->generate('viewEditProfile.php', 'viewTemplate.php', $data);
     }
 
+    public function actionDeleteUser()
+    {
+        if(isset($_POST['userid']))
+        {
+            $userID = $_POST['userid'];
+            $this->model->deleteUser($userID);
+        }
+    }
+
     public function actionUpdateProfile()
     {
         $password = $_POST['password'];
@@ -108,13 +117,13 @@ class ControllerUser extends Controller
         $username = $_POST['username'];
         $surname = $_POST['surname'];
         $flag = $_POST['statusflag'];
-        //$role = $_POST['role'];
-        $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname, "flag" => $flag);
+        $role = $_POST['role'];
+        $params = array("password" => $password, "mail" => $mail, "username" => $username, "surname" => $surname, "flag" => $flag, "role" => $role);
 
         $userID = $_GET['userid'];
         $this->model->updateUserProfile($params, $userID);
         $data = $this->model->getUserProfile($userID);
-        $this->view = new ViewIndex("EditProfile", $data);
+        $this->view = new ViewIndex("EditUserProfile", $data);
         $this->view->render();
     }
 }

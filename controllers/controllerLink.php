@@ -70,7 +70,7 @@ class ControllerLink extends Controller
 
             $linkID = $_GET['linkid'];
             $userID = $_SESSION['userID'];
-            $data = $this->model->getLinkDescription($userID, $linkID);
+            $data = $this->model->getLinkDescription($linkID);
             if ($data != null)
             {
                 $this->view = new ViewIndex("LinkInfo", $data);
@@ -89,7 +89,7 @@ class ControllerLink extends Controller
         {
 
             $linkID = $_GET['linkid'];
-            $data = $this->model->getPublicLinkDescription($linkID);
+            $data = $this->model->getLinkDescription($linkID);
             if ($data != null)
             {
                 $this->view = new ViewIndex("LinkInfo", $data);
@@ -107,7 +107,7 @@ class ControllerLink extends Controller
         if(isset($_GET['linkid'])) {
 
             $linkID = $_GET['linkid'];
-            $data = $this->model->getPublicLinkDescription($linkID);
+            $data = $this->model->getLinkDescription($linkID);
             if ($data != null)
             {
                 $this->view = new ViewIndex("EditLink", $data);
@@ -118,11 +118,15 @@ class ControllerLink extends Controller
 
     public function actionDeleteLink()
     {
-        if(isset($_GET['linkid']))
+        if(isset($_POST['linkid']))
         {
-            //$linkID = 5;
-            //$userID = 19;
-            //$this->model->deleteLink($userID, $linkID);
+            echo $_POST['linkid'];
+            $linkID = $_POST['linkid'];
+            $this->model->deleteLink($linkID);
+        }
+        else
+        {
+            echo "can't delete link!";
         }
     }
 
@@ -136,9 +140,8 @@ class ControllerLink extends Controller
             $flag = $_POST["linkflag"];
             $params = array("header" => $header, "link" => $link, "description" => $description, "flag" => $flag);
             $linkID = $_GET['linkid'];
-            $userID = 19;
-            $this->model->updateLink($params, $userID, $linkID);
-            $data = $this->model->getLinkDescription($userID, $linkID);
+            $this->model->updateLink($params, $linkID);
+            $data = $this->model->getLinkDescription($linkID);
             if ($data != null)
             {
                 $this->view = new ViewIndex("LinkInfo", $data);
