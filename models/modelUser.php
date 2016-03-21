@@ -344,7 +344,8 @@ class User extends GeneralModel
             $surname = $parameters["surname"];
             $password = $parameters["password"];
             $flag = $parameters["flag"];
-            //$role = $parameters["role"];
+            $role = $parameters["role"];
+            //echo $role;
             if ($password != NULL)
             {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -353,6 +354,20 @@ class User extends GeneralModel
             }
             $query = $this->connection->prepare("UPDATE Users SET email = '$mail', name = '$username', surname = '$surname', status = '$flag' WHERE primary_key = '$userID'");
             $query->execute();
+            $this->changeRole($userID, $role);
+        }
+    }
+
+    public function deleteUser($userID)
+    {
+        if (isset($_SESSION['userID']))
+        {
+            $query = $this->connection->prepare("DELETE FROM Users WHERE primary_key = $userID");
+            $query->execute();
+            $queryLinks = $this->connection->prepare("DELETE FROM Links WHERE user_id = $userID");
+            $queryLinks->execute();
+            $queryRole = $this->connection->prepare("DELETE FROM UserRoles WHERE user_id = $userID");
+            $queryRole->execute();
         }
     }
 

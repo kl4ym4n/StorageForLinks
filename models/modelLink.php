@@ -184,26 +184,7 @@ class Link extends GeneralModel
         return $params;
     }
 
-    public function getLinkDescription($userID, $linkID)
-    {
-        //global $connection;
-        $params = array();
-        $query = $this->connection->prepare("SELECT * FROM Links WHERE user_id = '$userID' AND primary_key = '$linkID'");
-        $query->execute();
-        $rowCount = $query->rowCount();
-        if($rowCount == 0)
-        {
-            echo "No such link in db";
-        }
-        else
-        {
-            $row = $query->fetchAll();
-            $params = array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
-        }
-        return $params;
-    }
-
-    public function getPublicLinkDescription($linkID)
+    public function getLinkDescription($linkID)
     {
         //global $connection;
         $params = array();
@@ -222,7 +203,26 @@ class Link extends GeneralModel
         return $params;
     }
 
-    public function updateLink($parameters, $userID, $linkID)
+//    public function getPublicLinkDescription($linkID)
+//    {
+//        //global $connection;
+//        $params = array();
+//        $query = $this->connection->prepare("SELECT * FROM Links WHERE primary_key = '$linkID'");
+//        $query->execute();
+//        $rowCount = $query->rowCount();
+//        if($rowCount == 0)
+//        {
+//            echo "No such link in db";
+//        }
+//        else
+//        {
+//            $row = $query->fetchAll();
+//            $params = array("id" => $row[0]['primary_key'], "link" => $row[0]["link"], "header" => $row[0]["header"], "description" => $row[0]["description"], "flag" => $row[0]["private_flag"]);
+//        }
+//        return $params;
+//    }
+
+    public function updateLink($parameters, $linkID)
     {
         //global $connection;
         if ($parameters["link"] == NULL || $parameters["description"] == NULL || $parameters["header"] == NULL)
@@ -235,16 +235,25 @@ class Link extends GeneralModel
             $link = $parameters["link"];
             $description = $parameters["description"];
             $flag = $parameters["flag"];
-            $query = $this->connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE user_id = '$userID' AND primary_key = $linkID");
+            $query = $this->connection->prepare("UPDATE Links SET header =  '$header', link = '$link', description = '$description', private_flag = '$flag' WHERE primary_key = $linkID");
             $query->execute();
         }
     }
 
-    public function deleteLink($userID, $linkID)
+    public function deleteLink($linkID)
     {
         //global $connection;
-        $query = $this->connection->prepare("DELETE FROM Links WHERE user_id = '$userID' AND primary_key = $linkID");
-        $query->execute();
+        //echo $linkID;
+        if (isset($_SESSION['userID']))
+        {
+            $query = $this->connection->prepare("DELETE FROM Links WHERE primary_key = $linkID");
+            $query->execute();
+        }
+        else
+        {
+            echo "You can't delete this link!";
+        }
+
     }
 
     public function getCurrentDateTime()
