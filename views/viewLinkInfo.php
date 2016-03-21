@@ -45,7 +45,7 @@ class ViewLinkInfo extends View
                             <label class="control-label"></label>
                                 <div class="controls">
                                 <a href="/Link/ViewEditLink/?linkid='.$data["id"].'" class="btn btn-primary">Edit link</a>
-                                <button class="btn btn-primary" name = "deletelinkbutton">Delete link</button>
+                                <button class="btn btn-primary delete-link-button" id='.$data["id"].' name = "deletelinkbutton">Delete link</button>
                                 </div>
                             </div>';
     }

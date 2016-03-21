@@ -57,11 +57,13 @@ class ViewEditUserProfile extends View
 
                 <div class="control-group">
                 <label class="control-label">Role</label>
-                    <div class="controls">
-                          <select class="form-control" id="selectRole">';
+                    <div class="controls ">
+
+                          <select class="selectpicker" id="selectRole" name="role">';
                             foreach ($data['roleList'] as $row)
                             {
-                                $this->template .= '<option>' . $row['role'] . '</option>';
+                                $this->template .= '<option ' .$this->setSelectedItem($data['role'][1], $row['role_id']);
+                                $this->template .= ' value='.$row['role_id'].'>' . $row['role'] . '</option>';
                             }
         $this->template .= '
                           </select>

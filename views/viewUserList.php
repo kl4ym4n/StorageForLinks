@@ -34,7 +34,7 @@ class ViewUserList extends View
                                                     $this->template .= ' <td>' . $value .' </td>';
                                                 }
                                                 $this->template .= ' <td><a href="/User/EditUserProfile/?userid='.$data[0][$i].'" class="btn btn-primary">Edit User</a></td>';
-                                                $this->template .= ' <td><a href="/User/EditProfile/?userid='.$data[0][$i].'" class="btn btn-primary">Delete User</a></td> </tr>';
+                                                $this->template .= ' <td><button id='.$data[0][$i].' class="btn btn-primary delete-user-button">Delete User</button></td> </tr>';
                                                 $i++;
                                             }
         $this->template .=  '</tbody>

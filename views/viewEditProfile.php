@@ -55,6 +55,21 @@ class ViewEditProfile extends View
                         </div>
                 </div>
 
+                <div class="control-group">
+                <label class="control-label">Role</label>
+                    <div class="controls">
+                          <select class="selectpicker" id="selectRole" name="role" disabled>';
+                                foreach ($data['roleList'] as $row)
+                                {
+                                    $this->template .= '<option ' .$this->setSelectedItem($data['role'][1], $row['role_id']);
+                                    $this->template .= ' value='.$row['role_id'].'>' . $row['role'] . '</option>';
+                                }
+                                $this->template .= '
+                          </select>
+
+                    </div>
+                </div>
+
                 <div class="checkbox">
                       <input type="hidden" name="statusflag" value="0" />
                       <label><input type="checkbox" name = "statusflag" value = "1" '.$checkedFlag.'>Set status active</label>
