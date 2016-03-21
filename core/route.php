@@ -33,9 +33,9 @@ class Route
         $controller_name = 'controller'.ucfirst($controller_name);
         $action_name = 'action'.ucfirst($action_name);
 
-        echo "Model: $model_name </br>";
-        echo "Controller: $controller_name </br>";
-        echo "Action: $action_name </br>";
+//        echo "Model: $model_name </br>";
+//        echo "Controller: $controller_name </br>";
+//        echo "Action: $action_name </br>";
 
         // catch model file
         $model_file = $model_name.'.php';
