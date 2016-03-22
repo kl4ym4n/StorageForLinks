@@ -116,6 +116,20 @@ class User extends GeneralModel
         }
     }
 
+    public function setUserPermission($roleID, $permissions)
+    {
+        $query = $this->connection->prepare("INSERT INTO Permissions (id_role, permissions) VALUES ('$roleID', '$permissions')");
+        $query->execute();
+    }
+
+    public function getUserPermission()
+    {
+
+
+        $query = $this->connection->prepare("SELECT permissions FROM Permissions WHERE id_role =''");
+        $query->execute();
+    }
+
     public function checkExistLogin()
     {
         //global $connection;
