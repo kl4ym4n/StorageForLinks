@@ -3,7 +3,7 @@ class ViewLinkInfo extends View
 {
     public function __construct($data)
     {
-        $checkedFlag = '';
+        $popupConfirm = new ViewConfirmDelete();
         if ($data["flag"] == '0')
         {
             $checkedFlag = 'Public';
@@ -48,16 +48,7 @@ class ViewLinkInfo extends View
                                 <button class="btn btn-primary delete-link-button" id='.$data["id"].' name = "deletelinkbutton">Delete link</button>
                                 </div>
                             </div>';
+        $this->template .= $popupConfirm->template;
     }
 }
-
-//
-//$stringForm = '<form method = post action = "ViewLink">
-//    Header: <input type = text name = "linkheader" value = "'. $data["header"] .'" disabled></br>
-//    Link: <input type = text name = "userlink" value = "'. $data["link"] .'" disabled></br>
-//    Description: <textarea rows="10" cols="75" name="linkdescription" disabled>' .$data["description"].
-//    '</textarea></br>
-//    Private: <input type = checkbox name = "linkflag" value = "'. $data["flag"] .'" disabled></br>
-//    <input type = submit name = "savebutton" value = "Save">
-//</form>';
 

@@ -5,6 +5,7 @@ class ViewUserList extends View
     {
         $linkPath = 'User/AllUsers';
         $pager = new ViewPagination($data[2], $data[3], $linkPath);
+        $popupConfirm = new ViewConfirmDelete();
         $this->template =
             '<div class="container">
                            <legend>Users</legend>
@@ -41,5 +42,6 @@ class ViewUserList extends View
                               </table>';
                                 $this->template .= $pager->template;
         $this->template .=   '</div>';
+        $this->template .= $popupConfirm->template;
     }
 }

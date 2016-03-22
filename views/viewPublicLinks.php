@@ -24,8 +24,8 @@ class ViewPublicLinks extends View
 
         $this->template =   $this->template .
                                 '</tr>
-                                </thead>
-                                <tbody>';
+                                 </thead>
+                                 <tbody>';
                                 $i = 0;
                                 foreach ($data[1] as $row)
                                 {
