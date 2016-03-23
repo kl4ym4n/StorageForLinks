@@ -76,12 +76,30 @@ class Route
         }
     }
 
+    function ErrorPage401()
+    {
+        header('HTTP/1.1 401 Unauthorized');
+        header("Status: 401 Unauthorized");
+        header('Location: http://test1/Error/401');
+        exit;
+    }
+
+    function ErrorPage403()
+    {
+        header('HTTP/1.1 403 Forbidden');
+        header("Status: 403 Forbidden");
+        header('Location: http://test1/Error/403');
+        exit;
+    }
+
     function ErrorPage404()
     {
         $host = 'http://'.$_SERVER['HTTP_HOST'].'/';
+        //echo "Page not found";
         header('HTTP/1.1 404 Not Found');
         header("Status: 404 Not Found");
-        header('Location:'.$host.'404');
+        header('Location: http://test1/Error/404');
+        exit;
     }
 
 }
