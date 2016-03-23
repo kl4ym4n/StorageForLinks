@@ -118,16 +118,31 @@ class User extends GeneralModel
 
     public function setUserPermission($roleID, $permissions)
     {
-        $query = $this->connection->prepare("INSERT INTO Permissions (id_role, permissions) VALUES ('$roleID', '$permissions')");
+        $query = $this->connection->prepare("INSERT INTO Permissions (role_id, permissions) VALUES ('$roleID', '$permissions')");
         $query->execute();
     }
 
-    public function getUserPermission()
+    public function getUserPermission($userID)
     {
 
-
-        $query = $this->connection->prepare("SELECT permissions FROM Permissions WHERE id_role =''");
+        $query = $this->connection->prepare("SELECT Permissions.permissions FROM Permissions JOIN UserRoles ON Permissions.role_id = UserRoles.role_id WHERE UserRoles.user_id ='$userID'");
         $query->execute();
+        $rowCount = $query->rowCount();
+        $permissions = array();
+        if ($rowCount == 0)
+        {
+            echo "No such user in db!";
+        }
+        else
+        {
+            $row = $query->fetchAll();
+            $permissions = explode(',', $row[0]['permissions']);
+//            foreach ($permissions as $item)
+//            {
+//                echo "$item ";
+//            }
+        }
+        return $permissions;
     }
 
     public function checkExistLogin()
@@ -136,7 +151,7 @@ class User extends GeneralModel
         $query = $this->connection->prepare("SELECT primary_key, login FROM Users WHERE login ='$this->login'");
         $query->execute();
         $rowCount = $query->rowCount();
-        if($rowCount > 0)
+        if ($rowCount > 0)
         {
             echo "User already exist!";
         }
