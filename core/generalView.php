@@ -24,7 +24,7 @@ class View
 
     function generate($content_view, $template_view, $data = null)
     {
-        include 'views/'.$template_view;
+        include '../views/'.$template_view;
     }
 
     function echoActiveClass($requestUri)
