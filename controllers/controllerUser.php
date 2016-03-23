@@ -32,6 +32,7 @@ class ControllerUser extends Controller
     public function actionLoginPage()
     {
         //$this->view->generate('viewLogin.php', 'viewTemplate.php');
+        $this->model->getUserPermission(20);
         $this->view = new ViewIndex("Login");
         $this->view->render();
     }
@@ -50,13 +51,6 @@ class ControllerUser extends Controller
     public function actionLogout()
     {
         $this->model->userLogout();
-//        session_start();
-//        session_unset();
-//        session_destroy();
-        //echo "logout in controller";
-        //$this->view = new ViewIndex("Login");
-        //$this->view->render();
-
     }
 
     public function actionAllUsers()
@@ -64,9 +58,6 @@ class ControllerUser extends Controller
         $data = $this->model->getAllUserList();
         $this->view = new ViewIndex("UserList", $data);
         $this->view->render();
-        //$this->view->generate('viewUserList.php', 'viewTemplate.php');
-        //$data = $this->model->getAllUserList();
-        //$this->view->generate('viewUserList.php', 'viewTemplate.php', $data);
     }
 
     public function actionViewProfile()
