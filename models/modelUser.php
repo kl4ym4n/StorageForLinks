@@ -242,7 +242,7 @@ class User extends GeneralModel
         $queryCount->execute();
         $rowCount = $queryCount->rowCount();
         $pageCount = ceil ($rowCount / $recLimit);
-        if (isset($_GET{'page'} ))
+        if (isset($_GET{'page'}))
         {
             $page = $_GET{'page'};
             $offset = $recLimit * $page ;
