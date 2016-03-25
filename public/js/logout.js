@@ -7,7 +7,7 @@ $(document).ready(function(){
             url: 'http://test1/User/Logout',
             success: function(data) {
                 alert("Success logout");
-                window.location.href = 'http://test1/User/LoginPage'
+                window.location.href = 'http://test1/User/Login'
             },
             error: function(xhr, desc, err) {
                 console.log(xhr);
