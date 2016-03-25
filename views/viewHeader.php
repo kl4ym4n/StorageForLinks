@@ -23,7 +23,7 @@ class ViewHeader extends View
 
                                      <li ';
                                             $this->template .= $this->echoActiveClass("AddLinkPage");
-                                            $this->template .= '><a href="/Link/AddLinkPage">Add Link</a></li>
+                                            $this->template .= '><a href="/Link/AddLink">Add Link</a></li>
 
                                      <li ';
                                             $this->template .= $this->echoActiveClass("UserLinks");
@@ -46,8 +46,8 @@ class ViewHeader extends View
                                      else if (!isset($_SESSION['userID']))
                                      {
                                          $this->template .= '<div class="nav navbar-nav navbar-right">
-                                        <a href="/User/LoginPage" class="btn btn-default navbar-btn">Sign in</a>
-                                        <a href="/User/RegistrationPage" class="btn btn-default navbar-btn">Registration</a>
+                                        <a href="/User/Login" class="btn btn-default navbar-btn">Sign in</a>
+                                        <a href="/User/Registration" class="btn btn-default navbar-btn">Registration</a>
                                         </div>';
                                      }
         $this->template .= '
