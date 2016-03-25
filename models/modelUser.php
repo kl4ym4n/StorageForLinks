@@ -90,42 +90,37 @@ class User extends GeneralModel
 
     public function registerUser(Array $parameters)
     {
-        if ($parameters["login"] == NULL || $parameters["mail"] == NULL || $parameters["username"] == NULL || $parameters["surname"] == NULL || $parameters["password"] == NULL)
+
+        if ($parameters["password"] != $parameters["repassword"])
         {
-            echo "Please, fill empty fields!";
+            $alertMessage ='<div class="alert alert-danger">Incorrect repeated password!</div>';
+            echo $alertMessage;
         }
         else
         {
-            if ($parameters["password"] != $parameters["repassword"])
-            {
-                $alertMessage ='<div class="alert alert-danger">Incorrect repeated password!</div>';
-                echo $alertMessage;
-            }
-            else
-            {
-                $this->setLogin($parameters["login"]);
-                $this->setEmail($parameters["mail"]);
-                $this->setName($parameters["username"]);
-                $this->setSurname($parameters["surname"]);
-                $hash = password_hash($parameters["password"], PASSWORD_DEFAULT);
-                $this->setPassword($hash);
-                $this->setStatus(0);
-                $this->setRole(2);
-                $this->checkExistLogin();
-            }
+            $this->setLogin($parameters["login"]);
+            $this->setEmail($parameters["mail"]);
+            $this->setName($parameters["username"]);
+            $this->setSurname($parameters["surname"]);
+            $hash = password_hash($parameters["password"], PASSWORD_DEFAULT);
+            $this->setPassword($hash);
+            $this->setStatus(0);
+            $this->setRole(2);
+            $this->checkExistLogin();
         }
+
     }
 
     public function setUserPermission($roleID, $permissions)
     {
-        $query = $this->connection->prepare("INSERT INTO Permissions (role_id, permissions) VALUES ('$roleID', '$permissions')");
+        $query = $this->connection->prepare("INSERT INTO Permissions (role_id, action) VALUES ('$roleID', '$permissions')");
         $query->execute();
     }
 
     public function getUserPermission($userID)
     {
 
-        $query = $this->connection->prepare("SELECT Permissions.permissions FROM Permissions JOIN UserRoles ON Permissions.role_id = UserRoles.role_id WHERE UserRoles.user_id ='$userID'");
+        $query = $this->connection->prepare("SELECT Permissions.action FROM Permissions JOIN UserRoles ON Permissions.role_id = UserRoles.role_id WHERE UserRoles.user_id ='$userID'");
         $query->execute();
         $rowCount = $query->rowCount();
         $permissions = array();
@@ -167,8 +162,8 @@ class User extends GeneralModel
             //$userPrimaryKey = $connection->lastInsertId();
             $this->setUserRole($row[0]["primary_key"], $this->getRole());
             $parameters = array("uid" => $row[0]["primary_key"], "hash" => $hash, "expireTime" => $expireTime);
-            $activation = new Activation();
-            $activation->fillFields($parameters);
+            $activation = new Activation($parameters);
+            //$activation->fillFields($parameters);
             $activation->addActivationPropertiesToDB();
             $this->sendEmail($this->email, $hash, "Confirm registration");
 
@@ -232,9 +227,6 @@ class User extends GeneralModel
 
     public function getAllUserList()
     {
-        //$connection = $this->getConnection();
-        //$connection = $this->connection;
-        //var_dump($this->getConnection());
         $recLimit = 3;
         $data = array();
         $userID = array();
@@ -261,8 +253,6 @@ class User extends GeneralModel
         }
         else
         {
-            //$row = $query->fetchAll();
-            //echo $pageCount;
             foreach ($query as $result)
             {
                 $row = array("name" => $result["name"], "surname" => $result["surname"], "login" => $result["login"],

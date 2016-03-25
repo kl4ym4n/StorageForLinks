@@ -33,17 +33,19 @@ class Activation extends GeneralModel
         return $this->expireTime;
     }
 
-    function __construct()
-    {
-
-    }
-
-    public function fillFields($params)
+    function __construct($params)
     {
         $this->setUserID($params["uid"]);
         $this->setLinkHash($params["hash"]);
         $this->setExpireTime($params["expireTime"]);
     }
+
+//    public function fillFields($params)
+//    {
+//        $this->setUserID($params["uid"]);
+//        $this->setLinkHash($params["hash"]);
+//        $this->setExpireTime($params["expireTime"]);
+//    }
 
     public function addActivationPropertiesToDB()
     {
