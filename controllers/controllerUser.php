@@ -7,43 +7,51 @@ class ControllerUser extends Controller
         $this->view = new View();
     }
 
-    public function actionRegistrationPage()
-    {
-        $this->view = new ViewIndex("Registration");
-        $this->view->render();
-        //$this->view->generate('viewRegistration.php', 'viewTemplate.php');
-    }
+//    public function actionRegistrationPage()
+//    {
+//        $this->view = new ViewIndex("Registration");
+//        $this->view->render();
+//        //$this->view->generate('viewRegistration.php', 'viewTemplate.php');
+//    }
 
     public function actionRegistration()
     {
-        $login = $_POST['login'];
-        $password = $_POST['password'];
-        $repassword = $_POST['repassword'];
-        $mail = $_POST['mail'];
-        $username = $_POST['username'];
-        $surname = $_POST['surname'];
-        $params = array("login" => $login, "password" => $password, "repassword" => $repassword, "mail" => $mail, "username" => $username, "surname" => $surname);
-        $this->model->registerUser($params);
+        if (isset($_POST['login']))
+        {
+            $login = $_POST['login'];
+            $password = $_POST['password'];
+            $repassword = $_POST['repassword'];
+            $mail = $_POST['mail'];
+            $username = $_POST['username'];
+            $surname = $_POST['surname'];
+            $params = array("login" => $login, "password" => $password, "repassword" => $repassword, "mail" => $mail, "username" => $username, "surname" => $surname);
+            $this->model->registerUser($params);
+        }
+
         $this->view = new ViewIndex("Registration");
         $this->view->render();
         //$this->view->generate('viewRegistration.php', 'viewTemplate.php');
     }
 
-    public function actionLoginPage()
-    {
-        //$this->view->generate('viewLogin.php', 'viewTemplate.php');
-        $this->model->getUserPermission(20);
-        $this->view = new ViewIndex("Login");
-        $this->view->render();
-    }
+//    public function actionLoginPage()
+//    {
+//        //$this->view->generate('viewLogin.php', 'viewTemplate.php');
+//        $this->model->getUserPermission(20);
+//        $this->view = new ViewIndex("Login");
+//        $this->view->render();
+//    }
 
     public function actionLogin()
     {
-        $userlogin = $_POST['userlogin'];
-        $userpassword = $_POST['userpassword'];
-        $parameters = array("userlogin" => $userlogin, "userpassword" => $userpassword);
-        $this->model->checkUserLogin($parameters);
-        $this->view = new ViewIndex("Main");
+        if (isset($_POST['userlogin']))
+        {
+            $userlogin = $_POST['userlogin'];
+            $userpassword = $_POST['userpassword'];
+            $parameters = array("userlogin" => $userlogin, "userpassword" => $userpassword);
+            $this->model->checkUserLogin($parameters);
+        }
+
+        $this->view = new ViewIndex("Login");
         $this->view->render();
         //$this->view->generate('viewLogin.php', 'viewTemplate.php');
     }

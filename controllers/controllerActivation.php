@@ -8,8 +8,16 @@ class ControllerActivation extends Controller
     }
     public function actionVerify()
     {
-        $this->view->generate('viewIndex.php', 'viewTemplate.php');
+        $this->view = new ViewIndex("Main");
+        $this->view->render();
+        //$this->view->generate('viewIndex.php', 'viewTemplate.php');
     }
+
+    public function actionActivationResend()
+    {
+
+    }
+
     public function actionActivate()
     {
         if(isset($_GET['hash']) && !empty($_GET['hash']))

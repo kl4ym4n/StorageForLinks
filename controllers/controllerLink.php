@@ -9,7 +9,7 @@ class ControllerLink extends Controller
 
     public function actionAddLink()
     {
-        if (isset($_SESSION['userID']) && $_SESSION['userID'] == true)
+        if (isset($_POST["userlink"]))
         {
             $link = $_POST["userlink"];
             $header = $_POST["linkheader"];
@@ -18,19 +18,16 @@ class ControllerLink extends Controller
             $parameters = array("link" => $link, "header" => $header, "description" => $description, "linkflag" => $privateFlag);
             $this->model->addLink($parameters);
         }
-        else
-        {
-            echo "You need to sign in first!";
-        }
+
         $this->view = new ViewIndex("AddLink");
         $this->view->render();
     }
 
-    public function actionAddLinkPage()
-    {
-        $this->view = new ViewIndex("AddLink");
-        $this->view->render();
-    }
+//    public function actionAddLinkPage()
+//    {
+//        $this->view = new ViewIndex("AddLink");
+//        $this->view->render();
+//    }
 
     public function actionPublicLinks()
     {
