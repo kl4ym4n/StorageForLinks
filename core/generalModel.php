@@ -7,6 +7,10 @@ class GeneralModel
     {
         $this->connection = Boot::getConnection();
     }
+    public function getConnection()
+    {
+        return $this->connection;
+    }
     public function printSmth()
     {
         echo "Ololo!";

@@ -9,6 +9,7 @@ class Route
         // default action and controller
         $controller_name = 'index';
         $action_name = 'index';
+        $permissionActionName = ucfirst($action_name);
 
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         //echo "Route[0]: $routes[0] </br>";
@@ -26,6 +27,7 @@ class Route
         if ( !empty($routes[2]) )
         {
             $action_name = $routes[2];
+            $permissionActionName = ucfirst($action_name);
         }
 
         // add prefix
@@ -67,7 +69,25 @@ class Route
         $action = $action_name;
         if(method_exists($controller, $action))
         {
-            $controller->$action();
+            //if (isset($_SESSION['login']))
+            //{
+                echo $permissionActionName;
+                if ($controller->allowedAction($permissionActionName, 1))
+                {
+                    $controller->$action();
+                }
+                else
+                {
+                    echo "Forbidden";
+                    //Route::ErrorPage403();
+                }
+
+            //}
+            //else
+            //{
+                //echo "ololo!";
+            //}
+
         }
         else
         {
