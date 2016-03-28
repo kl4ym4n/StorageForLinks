@@ -81,6 +81,25 @@ class User extends GeneralModel
         return $this->role;
     }
 
+    public function __construct()
+    {
+        $this->connection = Boot::getConnection();
+        $this->modelName = "User";
+    }
+
+    public function getUserByLogin($userID)
+    {
+        $result = array();
+
+        $queryRole = $this->connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
+        $queryRole->execute();
+        $rowRole = $queryRole->fetchAll();
+        $roleID = $rowRole[0]['role_id'];
+        $result[] = $roleID;
+        return $result;
+        //$row[0]['primary_key']
+    }
+
     public function addUserToDB()
     {
         //global $connection;

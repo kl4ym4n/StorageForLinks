@@ -4,6 +4,12 @@ class Link extends GeneralModel
 {
     private $userID, $link, $header, $description, $creationDate, $privateFlag;
 
+    public function __construct()
+    {
+        $this->connection = Boot::getConnection();
+        $this->modelName = "Link";
+    }
+
     public function addLinkToDB()
     {
         //global $connection;

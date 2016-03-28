@@ -3,6 +3,7 @@
 class GeneralModel
 {
     protected  $connection;
+    public $modelName;
     public function  __construct()
     {
         $this->connection = Boot::getConnection();

@@ -10,6 +10,7 @@ class Route
         $controller_name = 'index';
         $action_name = 'index';
         $permissionActionName = ucfirst($action_name);
+        $loggedUser = Route::isUserLogged();
 
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         //echo "Route[0]: $routes[0] </br>";
@@ -21,6 +22,7 @@ class Route
         if ( !empty($routes[1]) )
         {
             $controller_name = $routes[1];
+            $defaultModelName = $routes[1];
         }
 
         // action name
@@ -42,9 +44,22 @@ class Route
         // catch model file
         $model_file = $model_name.'.php';
         $model_path = "../models/".$model_file;
+        //echo $loggedUser;
         if(file_exists($model_path))
         {
             include "../models/".$model_file;
+            if ($loggedUser == true)
+            {
+                //$model = new $defaultModelName;
+                //$user = new User();
+                //$userRole = $user->getUserByLogin($_SESSION['userID']);
+                //echo $model->getResourceModel();
+                echo "create model";
+            }
+            else
+            {
+                echo "can't create model";
+            }
         }
         else
         {
@@ -67,32 +82,46 @@ class Route
         // create controller
         $controller = new $controller_name;
         $action = $action_name;
+        //echo $controller_name;
         if(method_exists($controller, $action))
         {
-            //if (isset($_SESSION['login']))
-            //{
-                echo $permissionActionName;
-                if ($controller->allowedAction($permissionActionName, 1))
-                {
-                    $controller->$action();
-                }
-                else
-                {
-                    echo "Forbidden";
-                    //Route::ErrorPage403();
-                }
+            if ($loggedUser == false)
+            {
+                $role = 1; //anon
+            }
+            else
+            {
+                //$role = $userRole[0];
+            }
 
-            //}
-            //else
-            //{
-                //echo "ololo!";
-            //}
-
+            //echo $permissionActionName;
+            echo $role;
+            if ($controller->allowedAction($permissionActionName, 1) || $controller_name == "controllerError")
+            {
+                $controller->$action();
+            }
+            else
+            {
+                //echo "Forbidden";
+                Route::ErrorPage403();
+            }
         }
         else
         {
-            echo "Can't find actions";
+            //echo "Can't find actions";
             Route::ErrorPage404();
+        }
+    }
+
+    function isUserLogged()
+    {
+        if (isset($_SESSION['userID']))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

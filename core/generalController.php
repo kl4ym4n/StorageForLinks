@@ -29,6 +29,11 @@ class Controller
         }
         return $access;
     }
+
+    function getResourceModel()
+    {
+        return $this->model->modelName;
+    }
         //return $permissions;
 
 }
