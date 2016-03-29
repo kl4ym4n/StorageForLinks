@@ -1,6 +1,6 @@
 <?php
 include_once "modelActivation.php";
-class User extends GeneralModel
+class ModelUser extends GeneralModel
 {
     private $login, $email, $password, $name, $surname, $role, $status;
 
@@ -84,13 +84,12 @@ class User extends GeneralModel
     public function __construct()
     {
         $this->connection = Boot::getConnection();
-        $this->modelName = "User";
+        $this->modelName = "ModelUser";
     }
 
     public function getUserByLogin($userID)
     {
         $result = array();
-
         $queryRole = $this->connection->prepare("SELECT role_id FROM UserRoles WHERE user_id = '$userID'");
         $queryRole->execute();
         $rowRole = $queryRole->fetchAll();
@@ -181,7 +180,7 @@ class User extends GeneralModel
             //$userPrimaryKey = $connection->lastInsertId();
             $this->setUserRole($row[0]["primary_key"], $this->getRole());
             $parameters = array("uid" => $row[0]["primary_key"], "hash" => $hash, "expireTime" => $expireTime);
-            $activation = new Activation($parameters);
+            $activation = new ModelActivation($parameters);
             //$activation->fillFields($parameters);
             $activation->addActivationPropertiesToDB();
             $this->sendEmail($this->email, $hash, "Confirm registration");

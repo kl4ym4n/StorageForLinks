@@ -1,13 +1,13 @@
 <?php
 //session_start();
-class Link extends GeneralModel
+class ModelLink extends GeneralModel
 {
     private $userID, $link, $header, $description, $creationDate, $privateFlag;
 
     public function __construct()
     {
         $this->connection = Boot::getConnection();
-        $this->modelName = "Link";
+        $this->modelName = "ModelLink";
     }
 
     public function addLinkToDB()

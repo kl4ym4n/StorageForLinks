@@ -1,5 +1,5 @@
 <?php
-class Activation extends GeneralModel
+class ModelActivation extends GeneralModel
 {
     private $userID, $linkHash, $expireTime;
 
@@ -35,9 +35,14 @@ class Activation extends GeneralModel
 
     function __construct($params)
     {
-        $this->setUserID($params["uid"]);
-        $this->setLinkHash($params["hash"]);
-        $this->setExpireTime($params["expireTime"]);
+        if (!empty($params))
+        {
+            $this->setUserID($params["uid"]);
+            $this->setLinkHash($params["hash"]);
+            $this->setExpireTime($params["expireTime"]);
+        }
+        $this->connection = Boot::getConnection();
+        $this->modelName = "ModelActivation";
     }
 
 //    public function fillFields($params)
