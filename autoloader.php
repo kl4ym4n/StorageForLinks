@@ -20,6 +20,7 @@ function autoload($className)
     foreach($arrayPaths as $path)
     {
         $file = sprintf('%s%s%s', __DIR__, $path, $fileName);
+        //var_dump($file);
         if(is_file($file))
         {
             require_once $file;
