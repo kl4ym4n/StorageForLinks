@@ -3,7 +3,7 @@ class ControllerLink extends Controller
 {
     public function __construct()
     {
-        $this->model = new Link();
+        $this->model = new ModelLink();
         $this->view = new View();
     }
 
@@ -28,6 +28,7 @@ class ControllerLink extends Controller
 //        $this->view = new ViewIndex("AddLink");
 //        $this->view->render();
 //    }
+
 
     public function actionPublicLinks()
     {

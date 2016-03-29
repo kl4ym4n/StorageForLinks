@@ -3,7 +3,8 @@ class ControllerActivation extends Controller
 {
     public function __construct()
     {
-        $this->model = new Activation();
+        $params = array();
+        $this->model = new ModelActivation($params);
         $this->view = new View();
     }
     public function actionVerify()
@@ -20,7 +21,7 @@ class ControllerActivation extends Controller
 
     public function actionActivate()
     {
-        if(isset($_GET['hash']) && !empty($_GET['hash']))
+        if(isset($_GET['hash']))
         {
             //echo "ok!";
             //echo $_GET['email'];
