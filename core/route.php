@@ -1,5 +1,4 @@
 <?php
-
 class Route
 {
 
@@ -47,18 +46,18 @@ class Route
         //echo $loggedUser;
         if(file_exists($model_path))
         {
-            include "../models/".$model_file;
+            //include "../models/".$model_file;
             if ($loggedUser == true)
             {
                 //$model = new $defaultModelName;
-                //$user = new User();
-                //$userRole = $user->getUserByLogin($_SESSION['userID']);
+                $user = new ModelUser();
+                $userRole = $user->getUserByLogin($_SESSION['userID']);
                 //echo $model->getResourceModel();
                 echo "create model";
             }
             else
             {
-                echo "can't create model";
+                //echo "can't create model";
             }
         }
         else
@@ -91,12 +90,12 @@ class Route
             }
             else
             {
-                //$role = $userRole[0];
+                $role = $userRole[0];
             }
 
             //echo $permissionActionName;
             echo $role;
-            if ($controller->allowedAction($permissionActionName, 1) || $controller_name == "controllerError")
+            if ($controller->allowedAction($permissionActionName, $role) || $controller_name == "controllerError")
             {
                 $controller->$action();
             }
